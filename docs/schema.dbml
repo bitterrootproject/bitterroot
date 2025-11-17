@@ -1,0 +1,37 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+// University, institution, or publisher
+Table institutions {
+  id integer [primary key]
+  name varchar
+  website varchar [note: "Insitution's website"]
+}
+
+// Call number
+// In the real implementation, this would likely be a
+// computed field, and the parsing in and out of the number
+// would be done behind the scenes, with a nice interface
+// for entering the fields in manually if you don't know
+// how the call numbers work.
+Table call_number {
+  // Example: LT/TU 838.1.E2
+  id integer [primary key]
+  subject varchar [note: "Ex: LT - Literature"]
+  domain varchar [note: "Ex: TU - Turkic Literatures"]
+  root int [note: "Ex: 838 - Tuvan Literature"]
+  aspect int [note: "Ex: 1 - General information"]
+  topic varchar [note: "Ex: E2 - ...about educational books"]
+  author_pub_info varchar [note: "Information about the author or publisher, Ex: A469"]
+}
+
+// Scholarly article
+Table article {
+  id integer [primary key]
+  image varchar [note: "link to image of first page (hosted on a server)"]
+  published datetime
+  institution varchar [ref: <> institutions.id]
+  abstract varchar [note: "May be very large"]
+  doi varchar [note: "A DOI parser would be nice for this field."]
+  call_number call_number [note: "Ex: LT/TU 838.1.E2 A469", ref: - call_number.id]
+}
