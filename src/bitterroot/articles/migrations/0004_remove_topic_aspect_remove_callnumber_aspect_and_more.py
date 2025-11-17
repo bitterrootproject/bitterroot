@@ -5,73 +5,76 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('articles', '0003_article_title'),
-        ('call_numbers', '0001_initial'),
+        ("articles", "0003_article_title"),
+        ("call_numbers", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='topic',
-            name='aspect',
+            model_name="topic",
+            name="aspect",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='aspect',
+            model_name="callnumber",
+            name="aspect",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='author_pub',
+            model_name="callnumber",
+            name="author_pub",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='domain',
+            model_name="callnumber",
+            name="domain",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='root',
+            model_name="callnumber",
+            name="root",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='subject',
+            model_name="callnumber",
+            name="subject",
         ),
         migrations.RemoveField(
-            model_name='callnumber',
-            name='topic',
+            model_name="callnumber",
+            name="topic",
         ),
         migrations.AlterField(
-            model_name='article',
-            name='call_number',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='articles', to='call_numbers.callnumber'),
+            model_name="article",
+            name="call_number",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="articles",
+                to="call_numbers.callnumber",
+            ),
         ),
         migrations.RemoveField(
-            model_name='domain',
-            name='subject',
+            model_name="domain",
+            name="subject",
         ),
         migrations.RemoveField(
-            model_name='root',
-            name='domain',
+            model_name="root",
+            name="domain",
         ),
         migrations.DeleteModel(
-            name='Aspect',
+            name="Aspect",
         ),
         migrations.DeleteModel(
-            name='AuthorPublisherInfo',
+            name="AuthorPublisherInfo",
         ),
         migrations.DeleteModel(
-            name='Topic',
+            name="Topic",
         ),
         migrations.DeleteModel(
-            name='CallNumber',
+            name="CallNumber",
         ),
         migrations.DeleteModel(
-            name='Subject',
+            name="Subject",
         ),
         migrations.DeleteModel(
-            name='Domain',
+            name="Domain",
         ),
         migrations.DeleteModel(
-            name='Root',
+            name="Root",
         ),
     ]

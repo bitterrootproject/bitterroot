@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.db import models
+
 from bitterroot.call_numbers.models import (
     # Subject,
     # Domain,
@@ -10,6 +11,7 @@ from bitterroot.call_numbers.models import (
     # AuthorPublisherInfo,
     CallNumber,
 )
+
 
 # Call number models
 class Institution(models.Model):

@@ -5,83 +5,204 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AuthorPublisherInfo',
+            name="AuthorPublisherInfo",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField()),
             ],
             options={
-                'verbose_name': 'author or publisher',
-                'verbose_name_plural': 'authors and publishers',
+                "verbose_name": "author or publisher",
+                "verbose_name_plural": "authors and publishers",
             },
         ),
         migrations.CreateModel(
-            name='Domain',
+            name="Domain",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField()),
             ],
         ),
         migrations.CreateModel(
-            name='Subject',
+            name="Subject",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField(unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField(unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Root',
+            name="Root",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField()),
-                ('domain', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='roots', to='call_numbers.domain')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField()),
+                (
+                    "domain",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="roots",
+                        to="call_numbers.domain",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Aspect',
+            name="Aspect",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField()),
-                ('root', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='aspects', to='call_numbers.root')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField()),
+                (
+                    "root",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="aspects",
+                        to="call_numbers.root",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='domain',
-            name='subject',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='domains', to='call_numbers.subject'),
+            model_name="domain",
+            name="subject",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="domains",
+                to="call_numbers.subject",
+            ),
         ),
         migrations.CreateModel(
-            name='Topic',
+            name="Topic",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField()),
-                ('number', models.CharField()),
-                ('aspect', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='topics', to='call_numbers.aspect')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField()),
+                ("number", models.CharField()),
+                (
+                    "aspect",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="topics",
+                        to="call_numbers.aspect",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='CallNumber',
+            name="CallNumber",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('aspect', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.aspect')),
-                ('author_pub', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.authorpublisherinfo')),
-                ('domain', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.domain')),
-                ('root', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.root')),
-                ('subject', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.subject')),
-                ('topic', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='call_numbers', to='call_numbers.topic')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "aspect",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.aspect",
+                    ),
+                ),
+                (
+                    "author_pub",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.authorpublisherinfo",
+                    ),
+                ),
+                (
+                    "domain",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.domain",
+                    ),
+                ),
+                (
+                    "root",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.root",
+                    ),
+                ),
+                (
+                    "subject",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.subject",
+                    ),
+                ),
+                (
+                    "topic",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="call_numbers",
+                        to="call_numbers.topic",
+                    ),
+                ),
             ],
         ),
     ]
