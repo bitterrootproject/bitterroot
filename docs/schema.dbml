@@ -62,12 +62,12 @@ Table call_number.author_pub_info {
 Table call_number.number {
   // Example: LT/TU 838.1.E2
   pk integer [primary key]
-  subject integer [ref: - call_number.subject.pk]
-  domain integer [ref: - call_number.domain.pk]
-  root integer [ref: - call_number.root.pk]
-  aspect integer [ref: - call_number.aspect.pk]
-  topic integer [ref: - call_number.topic.pk]
-  author_pub integer [ref: - call_number.author_pub_info.pk]
+  subject integer [ref: > call_number.subject.pk]
+  domain integer [ref: > call_number.domain.pk]
+  root integer [ref: > call_number.root.pk]
+  aspect integer [ref: > call_number.aspect.pk]
+  topic integer [ref: > call_number.topic.pk]
+  author_pub integer [ref: > call_number.author_pub_info.pk]
 }
 
 // Scholarly article
