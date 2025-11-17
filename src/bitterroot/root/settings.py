@@ -12,31 +12,44 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from environs import env
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Import environment variables
+env.read_env(BASE_DIR.parent.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(12je@*m7ogvo7gy7^mb^q^+4qb5mwvg2tb&7hhonj&hgv=w*+"
+SECRET_KEY = env.str(
+    "SECRET_KEY",
+    default="django-insecure-vi9)@6*fdd5sjxo0lrz8#zu@-c5d18+(xr3+-&x86&ox)f(vb7",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # --- built-in apps ---
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # --- 3rd-party apps ---
+    "debug_toolbar",
+    "django_extensions",
+    # --- local apps ---
+    "bitterroot.articles",
 ]
 
 MIDDLEWARE = [
@@ -46,10 +59,11 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "root.urls"
+ROOT_URLCONF = "bitterroot.root.urls"
 
 TEMPLATES = [
     {
@@ -66,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "root.wsgi.application"
+WSGI_APPLICATION = "bitterroot.root.wsgi.application"
 
 
 # Database
