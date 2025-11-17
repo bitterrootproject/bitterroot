@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_extensions",
     # --- local apps ---
     "bitterroot.articles",
+    "bitterroot.call_numbers"
 ]
 
 MIDDLEWARE = [
