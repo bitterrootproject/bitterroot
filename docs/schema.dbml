@@ -1,37 +1,83 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
+// See the live version: https://dbdiagram.io/d/Bitterroot-draft-DB-schema-691abd9d6735e111701cd9fd
+
 // University, institution, or publisher
 Table institutions {
-  id integer [primary key]
+  pk integer [primary key]
   name varchar
   website varchar [note: "Insitution's website"]
 }
 
-// Call number
-// In the real implementation, this would likely be a
-// computed field, and the parsing in and out of the number
-// would be done behind the scenes, with a nice interface
-// for entering the fields in manually if you don't know
-// how the call numbers work.
-Table call_number {
+
+// Call Number
+
+Table call_number.subject {
+  // Note: "Ex: LT - Literature"
+  pk integer [primary key]
+  subject_name varchar [note: "Ex: Literature"]
+  subject_id varchar [note: "Ex: LT"]
+}
+
+Table call_number.domain {
+  // Note: "Ex: TU - Turkic Literatures"
+  subject integer [ref: > call_number.subject.pk]
+  pk integer [primary key]
+  domain_name varchar [note: "Ex: Turkic Literatures"]
+  domain_id varchar [note: "Ex: TU"]
+}
+
+Table call_number.root {
+  // Note: "Ex: 838 - Tuvan Literature"
+  domain integer [ref: > call_number.domain.pk]
+  pk integer [primary key]
+  root_name varchar [note: "Ex: Tuvan Literature"]
+  root_id varchar [note: "Ex: 839"]
+}
+
+Table call_number.aspect {
+  // Note: "Ex: 1 - General information"
+  root integer [ref: > call_number.root.pk]
+  pk integer [primary key]
+  aspect_name varchar [note: "Ex: General information"]
+  aspect_id varchar [note: "Ex: 1"]
+}
+
+Table call_number.topic {
+  // Note: "Ex: E2 - ...about educational books"
+  aspect integer [ref: > call_number.aspect.pk]
+  pk integer [primary key]
+  topic_name varchar [note: "Ex: ...about educational books"]
+  topic_id varchar [note: "Ex: E2"]
+}
+
+Table call_number.author_pub_info {
+  Note: "Information about the author or publisher"
+  pk integer [primary key]
+  pub_name varchar
+  pub_id varchar [note: "Ex: A469"]
+}
+
+Table call_number.number {
   // Example: LT/TU 838.1.E2
-  id integer [primary key]
-  subject varchar [note: "Ex: LT - Literature"]
-  domain varchar [note: "Ex: TU - Turkic Literatures"]
-  root int [note: "Ex: 838 - Tuvan Literature"]
-  aspect int [note: "Ex: 1 - General information"]
-  topic varchar [note: "Ex: E2 - ...about educational books"]
-  author_pub_info varchar [note: "Information about the author or publisher, Ex: A469"]
+  pk integer [primary key]
+  subject integer [ref: - call_number.subject.pk]
+  domain integer [ref: - call_number.domain.pk]
+  root integer [ref: - call_number.root.pk]
+  aspect integer [ref: - call_number.aspect.pk]
+  topic integer [ref: - call_number.topic.pk]
+  author_pub integer [ref: - call_number.author_pub_info.pk]
 }
 
 // Scholarly article
 Table article {
-  id integer [primary key]
-  image varchar [note: "link to image of first page (hosted on a server)"]
+  pk integer [primary key]
+  first_page varchar [note: "URL to image of first page"]
   published datetime
-  institution varchar [ref: <> institutions.id]
+  added datetime
+  institution integer [ref: <> institutions.pk]
   abstract varchar [note: "May be very large"]
   doi varchar [note: "A DOI parser would be nice for this field."]
-  call_number call_number [note: "Ex: LT/TU 838.1.E2 A469", ref: - call_number.id]
+  call_number integer [note: "Ex: LT/TU 838.1.E2 A469", ref: > call_number.number.pk]
 }

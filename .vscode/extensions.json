@@ -1,6 +1,6 @@
 {
     "recommendations": [
         "matt-meyers.vscode-dbml",
-        "nicolas-liger.dbml-viewer"
+        // "nicolas-liger.dbml-viewer"
     ]
 }
