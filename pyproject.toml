@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A hostable, searchable, database to categorize and analyze the scholarships of different universities and identify different niches of academic literature."
 authors = [
     { name = "Noah S. Roberts", email = "35052448+Mase3206@users.noreply.github.com" },
-    { name = "Johnny Norton", email = "unknown@example.com" },
+    { name = "John Norton", email = "unknown@example.com" },
 ]
 readme = "README.md"
 requires-python = ">3.13,<3.14"
