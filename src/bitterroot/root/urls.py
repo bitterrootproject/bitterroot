@@ -1,5 +1,5 @@
 """
-URL configuration for root project.
+URL configuration for bitterroot project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -16,8 +16,10 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/v0/cn/", include("bitterroot.call_numbers.urls", namespace="cn")),
+    path("api/v0/auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
