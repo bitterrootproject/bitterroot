@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "app.css": "tailwindcss"
+    },
+    "[svelte]": {
+        "editor.tabSize": 2,
+        "editor.useTabStops": true,
+        "editor.insertSpaces": false,
+    }
+}

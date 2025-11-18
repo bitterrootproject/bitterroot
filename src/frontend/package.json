@@ -25,6 +25,8 @@
 		"eslint": "^9.38.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.12.4",
+		"flowbite": "^4.0.1",
+		"flowbite-svelte": "^1.28.1",
 		"globals": "^16.4.0",
 		"mdsvex": "^0.12.6",
 		"prettier": "^3.6.2",

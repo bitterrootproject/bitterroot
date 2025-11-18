@@ -39,7 +39,7 @@ manage = "bitterroot.manage:main"
 # Ruff settings
 
 [tool.ruff]
-extend-exclude = ["sample/*"]
+include = ["src/bitterroot/**/*.py"]
 
 [tool.ruff.format]
 docstring-code-format = true
