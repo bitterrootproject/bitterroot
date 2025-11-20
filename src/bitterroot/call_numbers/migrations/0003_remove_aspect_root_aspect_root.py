@@ -4,19 +4,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('call_numbers', '0002_rename_authorpublisherinfo_authorpublisher'),
+        ("call_numbers", "0002_rename_authorpublisherinfo_authorpublisher"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='aspect',
-            name='root',
+            model_name="aspect",
+            name="root",
         ),
         migrations.AddField(
-            model_name='aspect',
-            name='root',
-            field=models.ManyToManyField(related_name='aspects', to='call_numbers.root'),
+            model_name="aspect",
+            name="root",
+            field=models.ManyToManyField(
+                related_name="aspects", to="call_numbers.root"
+            ),
         ),
     ]

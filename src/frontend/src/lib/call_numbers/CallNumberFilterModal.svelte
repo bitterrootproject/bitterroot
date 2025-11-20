@@ -62,8 +62,8 @@
 	<!-- Subject -->
 	<SelectionBox
 		items={[
-			{ name: 'Literature', id: 'LT' },
-			{ name: 'Mathematics', id: 'MA' }
+			{ name: 'Literature', number: 'LT' },
+			{ name: 'Mathematics', number: 'MA' }
 		]}
 		select={(e) => (selected.subject = e)}
 	/>
@@ -71,8 +71,8 @@
 	<!-- Domain -->
 	<SelectionBox
 		items={[
-			{ name: 'Turkic', id: 'TU' },
-			{ name: 'Germanic', id: 'DE' }
+			{ name: 'Turkic', number: 'TU' },
+			{ name: 'Germanic', number: 'DE' }
 		]}
 		select={(e) => (selected.domain = e)}
 	/>
@@ -80,8 +80,8 @@
 	<!-- Root -->
 	<SelectionBox
 		items={[
-			{ name: 'Tuvan', id: '838' },
-			{ name: 'Turkish', id: '839' }
+			{ name: 'Tuvan', number: '838' },
+			{ name: 'Turkish', number: '839' }
 		]}
 		select={(e) => (selected.root = e)}
 	/>
@@ -89,7 +89,7 @@
 	<!-- Aspect -->
 	<SelectionBox
 		items={[
-			{ name: 'General Information', id: '1' }
+			{ name: 'General Information', number: '1' }
 			// {name: "Mathematics", id: "MA"},
 		]}
 		select={(e) => (selected.aspect = e)}
@@ -98,7 +98,7 @@
 	<!-- Topic -->
 	<SelectionBox
 		items={[
-			{ name: 'Educational Books', id: 'E2' }
+			{ name: 'Educational Books', number: 'E2' }
 			// {name: "Mathematics", id: "MA"},
 		]}
 		select={(e) => (selected.topic = e)}
@@ -107,7 +107,7 @@
 	<!-- Author/Publisher -->
 	<SelectionBox
 		items={[
-			{ name: 'Unknown', id: 'A469' }
+			{ name: 'Unknown', number: 'A469' }
 			// {name: "Mathematics", id: "MA"},
 		]}
 		select={(e) => (selected.authorPublisher = e)}

@@ -1,6 +1,7 @@
 export interface CallNumberFieldItems {
 	name: string;
-	id: string;
+	number: string;
+	id?: number; // db pk
 }
 
 export interface SelectedItems {
@@ -16,19 +17,19 @@ export function formatCallNumber(selectedFields: SelectedItems): string {
 	// LT/TU 838.1.E2 A469
 	let callNumber = '';
 	if (selectedFields.subject) {
-		callNumber += selectedFields.subject.id;
+		callNumber += selectedFields.subject.number;
 
 		if (selectedFields.domain) {
-			callNumber += '/' + selectedFields.domain.id;
+			callNumber += '/' + selectedFields.domain.number;
 
 			if (selectedFields.root) {
-				callNumber += ' ' + selectedFields.root.id;
+				callNumber += ' ' + selectedFields.root.number;
 
 				if (selectedFields.aspect) {
-					callNumber += '.' + selectedFields.aspect.id;
+					callNumber += '.' + selectedFields.aspect.number;
 
 					if (selectedFields.topic) {
-						callNumber += '.' + selectedFields.topic.id;
+						callNumber += '.' + selectedFields.topic.number;
 					}
 				}
 			}
@@ -36,7 +37,7 @@ export function formatCallNumber(selectedFields: SelectedItems): string {
 	}
 
 	if (selectedFields.authorPublisher) {
-		callNumber += ' ' + selectedFields.authorPublisher.id;
+		callNumber += ' ' + selectedFields.authorPublisher.number;
 	}
 
 	return callNumber;

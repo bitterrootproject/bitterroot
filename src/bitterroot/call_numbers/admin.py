@@ -43,7 +43,7 @@ class AspectAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
-        "root",
+        # "root",
     ]
 
 

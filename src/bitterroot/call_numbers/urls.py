@@ -19,8 +19,8 @@ router.register(r"domains", DomainViewSet)
 router.register(r"roots", RootViewSet)
 router.register(r"aspects", AspectViewSet)
 router.register(r"topics", TopicViewSet)
-router.register(r"ap", AuthorPublisherViewSet)
-router.register(r"cn", CallNumberViewSet)
+router.register(r"ap", AuthorPublisherViewSet)  # authors and publishers
+router.register(r"cn", CallNumberViewSet)  # call numbers
 
 urlpatterns = [
     path("", include(router.urls)),

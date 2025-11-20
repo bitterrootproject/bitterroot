@@ -4,7 +4,12 @@
 <script lang="ts">
 	// import { Alert } from "flowbite-svelte";
 	import CallNumberFilterModal from '$lib/call_numbers/CallNumberFilterModal.svelte';
-	import { type SelectedItems, formatCallNumber } from '$lib/call_numbers/models';
+	import {
+		type SelectedItems,
+		type CallNumberFieldItems,
+		formatCallNumber
+	} from '$lib/call_numbers/models';
+	import { getSubjects } from '$lib/call_numbers/lib';
 
 	let selected: SelectedItems = $state({
 		subject: null,
@@ -30,3 +35,9 @@
 
 	<CallNumberFilterModal {select} buttonText="Filter" />
 </div>
+
+{#await getSubjects() then subjects}
+	{#each subjects as s}
+		{s.name}, {s.number} <br />
+	{/each}
+{/await}

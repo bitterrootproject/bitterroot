@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "django_extensions",
     "rest_framework",
+    "corsheaders",
     # --- local apps ---
     "bitterroot.articles",
     "bitterroot.call_numbers",
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -137,6 +139,15 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+# CORS Settings
+CORS_ALLOW_ALL_ORIGINS = True
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "access-control-allow-origin",
+)
 
 # Django REST Framework settings
 

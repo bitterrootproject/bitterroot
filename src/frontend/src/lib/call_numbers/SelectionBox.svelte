@@ -14,7 +14,7 @@
 	} = $props();
 
 	/** Used to hand the whole selected object over to the modal (parent). */
-	const itemsDict = new Map(items.map((obj) => [obj.id, obj]));
+	const itemsDict = new Map(items.map((obj) => [obj.number, obj]));
 
 	/** Search string. */
 	let query = $state('');
@@ -26,7 +26,7 @@
 	);
 
 	let highlightedId: string | null = $derived(
-		highlightedIndex >= 0 && filtered[highlightedIndex] ? filtered[highlightedIndex].id : null
+		highlightedIndex >= 0 && filtered[highlightedIndex] ? filtered[highlightedIndex].number : null
 	);
 
 	// keep highlighted in bounds
@@ -49,11 +49,11 @@
 	let selectedId: string = $state('');
 	function choose(item: CallNumberFieldItems) {
 		// Allow deselecting an item, if it's already selected.
-		if (selectedId == item.id) {
+		if (selectedId == item.number) {
 			selectedId = '';
 			select(null!);
 		} else {
-			selectedId = item.id;
+			selectedId = item.number;
 			let selectedItem: CallNumberFieldItems | undefined = itemsDict.get(selectedId);
 			select(selectedItem!); // Pass the raw undefined, if it's there
 		}
@@ -79,12 +79,13 @@
 		{#if filtered.length === 0}
 			<li class="item">No results</li>
 		{:else}
-			{#each filtered as item, idx (item.id)}
+			{#each filtered as item, idx (item.number)}
 				<li
 					role="option"
-					aria-selected={item.id === highlightedId}
-					id={`option-${item.id}`}
-					class="item {item.id === highlightedId ? 'highlighted' : ''} {item.id === selectedId
+					aria-selected={item.number === highlightedId}
+					id={`option-${item.number}`}
+					class="item {item.number === highlightedId ? 'highlighted' : ''} {item.number ===
+					selectedId
 						? 'selected'
 						: ''} "
 					tabindex="0"
@@ -98,7 +99,7 @@
 					onmouseenter={() => (highlightedIndex = idx)}
 					onmouseleave={() => (highlightedIndex = -1)}
 				>
-					{item.id}: {item.name}
+					{item.number}: {item.name}
 				</li>
 			{/each}
 		{/if}
