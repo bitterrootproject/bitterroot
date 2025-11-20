@@ -48,9 +48,9 @@ class Root(models.Model):
 class Aspect(models.Model):
     name = models.CharField()
     number = models.CharField()
-    root = models.ForeignKey(
+    root = models.ManyToManyField(
         Root,
-        on_delete=models.PROTECT,
+        # on_delete=models.PROTECT,
         related_name="aspects",
     )
 
