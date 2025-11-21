@@ -114,3 +114,7 @@ class CallNumber(models.Model):
 
     def __str__(self) -> str:
         return f"{self.subject!r}/{self.domain!r} {self.root!r}.{self.aspect!r}.{self.topic!r} {self.author_pub!r}"
+
+    @property
+    def formatted(self) -> str:
+        return str(self)

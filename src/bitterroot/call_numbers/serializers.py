@@ -86,4 +86,5 @@ class CallNumberSerializer(ModelSerializer):
             "aspect",
             "topic",
             "author_pub",
+            "formatted",  # pretty formatting
         ]
