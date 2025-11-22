@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from bitterroot.call_numbers.models import (
     Aspect,
@@ -18,47 +18,121 @@ from bitterroot.call_numbers.serializers import (
     SubjectSerializer,
     TopicSerializer,
 )
+from bitterroot.utils.filters import QueryFilter
 
 # Create your views here.
 
 
-class SubjectViewSet(viewsets.ModelViewSet):
-    queryset = Subject.objects.all().order_by("number")
+# Subject
+class SubjectListView(ListAPIView):
+    queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class DomainViewSet(viewsets.ModelViewSet):
-    queryset = Domain.objects.all().order_by("number")
+class SubjectDetailView(RetrieveAPIView):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+
+# Domain
+class DomainListView(ListAPIView):
+    queryset = Domain.objects.all()
     serializer_class = DomainSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["subject"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class RootViewSet(viewsets.ModelViewSet):
-    queryset = Root.objects.all().order_by("number")
+class DomainDetailView(RetrieveAPIView):
+    queryset = Domain.objects.all()
+    serializer_class = DomainSerializer
+
+
+# Root
+class RootListView(ListAPIView):
+    queryset = Root.objects.all()
     serializer_class = RootSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["domain"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class AspectViewSet(viewsets.ModelViewSet):
-    queryset = Aspect.objects.all().order_by("number")
+class RootDetailView(RetrieveAPIView):
+    queryset = Root.objects.all()
+    serializer_class = RootSerializer
+
+
+# Aspect
+class AspectListView(ListAPIView):
+    queryset = Aspect.objects.all()
     serializer_class = AspectSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["root"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class TopicViewSet(viewsets.ModelViewSet):
-    queryset = Topic.objects.all().order_by("number")
+class AspectDetailView(RetrieveAPIView):
+    queryset = Aspect.objects.all()
+    serializer_class = AspectSerializer
+
+
+# Topic
+class TopicListView(ListAPIView):
+    queryset = Topic.objects.all()
     serializer_class = TopicSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["aspect"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class AuthorPublisherViewSet(viewsets.ModelViewSet):
-    queryset = AuthorPublisher.objects.all().order_by("number")
+class TopicDetailView(RetrieveAPIView):
+    queryset = Topic.objects.all()
+    serializer_class = TopicSerializer
+
+
+# Author Publisher
+class AuthorPublisherListView(ListAPIView):
+    queryset = AuthorPublisher.objects.all()
     serializer_class = AuthorPublisherSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["number"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class CallNumberViewSet(viewsets.ModelViewSet):
+class AuthorPublisherDetailView(RetrieveAPIView):
+    queryset = AuthorPublisher.objects.all()
+    serializer_class = AuthorPublisherSerializer
+
+
+# Call Number
+class CallNumberListView(ListAPIView):
     queryset = CallNumber.objects.all()
     serializer_class = CallNumberSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = [
+        "subject",
+        "domain",
+        "root",
+        "aspect",
+        "topic",
+        "author",
+    ]
+
+
+class CallNumberDetailView(RetrieveAPIView):
+    queryset = CallNumber.objects.all()
+    serializer_class = CallNumberSerializer

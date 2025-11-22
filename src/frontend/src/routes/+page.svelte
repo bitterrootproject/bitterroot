@@ -2,16 +2,11 @@
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p> -->
 
 <script lang="ts">
-	// import { Alert } from "flowbite-svelte";
 	import CallNumberFilterModal from '$lib/call_numbers/CallNumberFilterModal.svelte';
-	import {
-		type SelectedItems,
-		type CallNumberFieldItems,
-		formatCallNumber
-	} from '$lib/call_numbers/models';
-	import { getSubjects } from '$lib/call_numbers/lib';
+	import { type SelectedItems } from '$lib/call_numbers/models';
+	import { getCallNumbers } from '$lib/call_numbers/lib';
 
-	let selected: SelectedItems = $state({
+	let querySelected: SelectedItems = $state({
 		subject: null,
 		domain: null,
 		root: null,
@@ -20,24 +15,50 @@
 		authorPublisher: null
 	});
 
-	let callNumber: string = $derived(formatCallNumber(selected));
-
 	function select(selectedItems: SelectedItems) {
-		selected = selectedItems;
+		querySelected = selectedItems;
+	}
+
+	function noQuery() {
+		return (
+			querySelected.subject == null &&
+			querySelected.domain == null &&
+			querySelected.root == null &&
+			querySelected.aspect == null &&
+			querySelected.topic == null &&
+			querySelected.authorPublisher == null
+		);
 	}
 
 	// $inspect(selected);
 	// $inspect(callNumber);
+	// $inspect(querySelected);
 </script>
 
 <div class="p-8">
-	<input placeholder="Call number..." bind:value={callNumber} aria-label="Call number" />
+	<CallNumberFilterModal {select} />
 
-	<CallNumberFilterModal {select} buttonText="Filter" />
+	{#if !noQuery()}
+		{#await getCallNumbers(querySelected)}
+			loading items...
+		{:then callNumbers}
+			<ul>
+				<!-- Svelte demands the use of a "key" in `each` blocks: https://sveltejs.github.io/eslint-plugin-svelte/rules/require-each-key/ -->
+				{#each callNumbers as cn (cn)}
+					{#await cn then cn}
+						<li>
+							{cn.id}
+							{cn.subject.name}
+							{cn.domain.name}
+							{cn.root.name}
+							{cn.aspect.name}
+							{cn.topic.name}
+							{cn.authorPublisher.name}
+						</li>
+						<br />
+					{/await}
+				{/each}
+			</ul>
+		{/await}
+	{/if}
 </div>
-
-{#await getSubjects() then subjects}
-	{#each subjects as s}
-		{s.name}, {s.number} <br />
-	{/each}
-{/await}

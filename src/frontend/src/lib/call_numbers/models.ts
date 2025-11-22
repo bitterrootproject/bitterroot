@@ -1,16 +1,27 @@
-export interface CallNumberFieldItems {
+export interface CallNumberFieldItem {
 	name: string;
 	number: string;
 	id?: number; // db pk
 }
 
 export interface SelectedItems {
-	subject: CallNumberFieldItems | null;
-	domain: CallNumberFieldItems | null;
-	root: CallNumberFieldItems | null;
-	aspect: CallNumberFieldItems | null;
-	topic: CallNumberFieldItems | null;
-	authorPublisher: CallNumberFieldItems | null;
+	subject: CallNumberFieldItem | null;
+	domain: CallNumberFieldItem | null;
+	root: CallNumberFieldItem | null;
+	aspect: CallNumberFieldItem | null;
+	topic: CallNumberFieldItem | null;
+	authorPublisher: CallNumberFieldItem | null;
+}
+
+export interface CallNumber {
+	id: number;
+	subject: CallNumberFieldItem;
+	domain: CallNumberFieldItem;
+	root: CallNumberFieldItem;
+	aspect: CallNumberFieldItem;
+	topic: CallNumberFieldItem;
+	authorPublisher: CallNumberFieldItem;
+	formatted: string;
 }
 
 export function formatCallNumber(selectedFields: SelectedItems): string {
@@ -42,10 +53,3 @@ export function formatCallNumber(selectedFields: SelectedItems): string {
 
 	return callNumber;
 }
-
-// namespace CallNumber {
-//     interface Subject {
-//         subject_name: string,
-//         subject_id: string,
-//     }
-// }

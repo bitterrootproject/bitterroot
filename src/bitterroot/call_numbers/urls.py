@@ -1,27 +1,39 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
 from bitterroot.call_numbers.views import (
-    AspectViewSet,
-    AuthorPublisherViewSet,
-    CallNumberViewSet,
-    DomainViewSet,
-    RootViewSet,
-    SubjectViewSet,
-    TopicViewSet,
+    AspectDetailView,
+    AspectListView,
+    AuthorPublisherDetailView,
+    AuthorPublisherListView,
+    CallNumberDetailView,
+    CallNumberListView,
+    DomainDetailView,
+    DomainListView,
+    RootDetailView,
+    RootListView,
+    SubjectDetailView,
+    SubjectListView,
+    TopicDetailView,
+    TopicListView,
 )
 
 app_name = "cn"
 
-router = routers.DefaultRouter()
-router.register(r"subjects", SubjectViewSet)
-router.register(r"domains", DomainViewSet)
-router.register(r"roots", RootViewSet)
-router.register(r"aspects", AspectViewSet)
-router.register(r"topics", TopicViewSet)
-router.register(r"ap", AuthorPublisherViewSet)  # authors and publishers
-router.register(r"cn", CallNumberViewSet)  # call numbers
-
 urlpatterns = [
-    path("", include(router.urls)),
+    path("subjects/", SubjectListView.as_view()),
+    path("subjects/<int:pk>", SubjectDetailView.as_view()),
+    path("domains/", DomainListView.as_view()),
+    path("domains/<int:pk>", DomainDetailView.as_view()),
+    path("roots/", RootListView.as_view()),
+    path("roots/<int:pk>", RootDetailView.as_view()),
+    path("aspects/", AspectListView.as_view()),
+    path("aspects/<int:pk>", AspectDetailView.as_view()),
+    path("topics/", TopicListView.as_view()),
+    path("topics/<int:pk>", TopicDetailView.as_view()),
+    # authors and publishers
+    path("ap/", AuthorPublisherListView.as_view()),
+    path("ap/<int:pk>", AuthorPublisherDetailView.as_view()),
+    # call numbers
+    path("cn/", CallNumberListView.as_view()),
+    path("cn/<int:pk>", CallNumberDetailView.as_view()),
 ]
