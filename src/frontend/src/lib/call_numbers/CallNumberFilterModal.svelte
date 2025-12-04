@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Modal, P, Input } from 'flowbite-svelte';
+	import { Button, Modal, P } from 'flowbite-svelte';
 	import SelectionBox from './SelectionBox.svelte';
 	import { type SelectedItems, formatCallNumber } from '$lib/call_numbers/models';
 	import {
@@ -52,14 +52,14 @@
 	// $inspect(selected);
 </script>
 
-<div class="block">
-	<Input
+<div class="flex">
+	<!-- <Input
 		placeholder="Call number..."
 		bind:value={callNumber}
 		aria-label="Call number"
 		class="inline-flex max-w-1/6"
 		disabled={true}
-	/>
+	/> -->
 
 	<!-- placed somewhere in the DOM with a relative position -->
 	<Button
@@ -84,6 +84,8 @@
 			select(selected);
 		}}>Search</Button
 	>
+
+	<P>Call Number: {callNumber}</P>
 </div>
 
 <!-- absolute positioning -->

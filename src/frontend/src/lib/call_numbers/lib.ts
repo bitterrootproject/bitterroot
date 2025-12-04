@@ -64,21 +64,21 @@ export async function getAuthorsPublishers() {
 	return getField('ap');
 }
 
-async function getFieldDetail(fieldName: string, id: number) {
-	const headers: Headers = new Headers();
-	headers.set('Access-Control-Allow-Origin', '*');
-	headers.set('Accept', 'application/json');
+// async function getFieldDetail(fieldName: string, id: number) {
+// 	const headers: Headers = new Headers();
+// 	headers.set('Access-Control-Allow-Origin', '*');
+// 	headers.set('Accept', 'application/json');
 
-	const request: RequestInfo = new Request(`http://localhost:8000/api/v0/cn/${fieldName}/${id}`, {
-		method: 'GET',
-		headers: headers
-	});
+// 	const request: RequestInfo = new Request(`http://localhost:8000/api/v0/cn/${fieldName}/${id}`, {
+// 		method: 'GET',
+// 		headers: headers
+// 	});
 
-	// Access-Control-Allow-Origin
-	return fetch(request)
-		.then((response) => response.json())
-		.then((response) => response as CallNumberFieldItem);
-}
+// 	// Access-Control-Allow-Origin
+// 	return fetch(request)
+// 		.then((response) => response.json())
+// 		.then((response) => response as CallNumberFieldItem);
+// }
 
 /*
    {
@@ -94,29 +94,30 @@ async function getFieldDetail(fieldName: string, id: number) {
 */
 interface RawCallNumber {
 	id: number;
-	subject: number;
-	domain: number;
-	root: number;
-	aspect: number;
-	topic: number;
-	author_pub: number;
+	subject: CallNumberFieldItem;
+	domain: CallNumberFieldItem;
+	root: CallNumberFieldItem;
+	aspect: CallNumberFieldItem;
+	topic: CallNumberFieldItem;
+	author_pub: CallNumberFieldItem;
 	formatted: string;
 }
 
-async function convertRawCallNumberToDetail(rawCallNumber: RawCallNumber): Promise<CallNumber> {
-	return {
-		id: rawCallNumber.id,
-		subject: await getFieldDetail('subjects', rawCallNumber.subject),
-		domain: await getFieldDetail('domains', rawCallNumber.domain),
-		root: await getFieldDetail('roots', rawCallNumber.root),
-		aspect: await getFieldDetail('aspects', rawCallNumber.aspect),
-		topic: await getFieldDetail('topics', rawCallNumber.topic),
-		authorPublisher: await getFieldDetail('ap', rawCallNumber.author_pub),
-		formatted: rawCallNumber.formatted
-	};
-}
+// async function convertRawCallNumberToDetail(rawCallNumber: RawCallNumber): Promise<CallNumber> {
+// 	return {
+// 		id: rawCallNumber.id,
+// 		subject: await getFieldDetail('subjects', rawCallNumber.subject),
+// 		domain: await getFieldDetail('domains', rawCallNumber.domain),
+// 		root: await getFieldDetail('roots', rawCallNumber.root),
+// 		aspect: await getFieldDetail('aspects', rawCallNumber.aspect),
+// 		topic: await getFieldDetail('topics', rawCallNumber.topic),
+// 		authorPublisher: await getFieldDetail('ap', rawCallNumber.author_pub),
+// 		formatted: rawCallNumber.formatted
+// 	};
+// }
 
-export async function getCallNumbers(fields: SelectedItems): Promise<Promise<CallNumber>[]> {
+export async function getCallNumbers(fields: SelectedItems): Promise<CallNumber[]> {
+	// export function getCallNumbers(fields: SelectedItems): CallNumber[] {
 	const headers: Headers = new Headers();
 	headers.set('Access-Control-Allow-Origin', '*');
 	headers.set('Accept', 'application/json');
@@ -143,7 +144,7 @@ export async function getCallNumbers(fields: SelectedItems): Promise<Promise<Cal
 	}
 
 	const request = new Request(
-		`http://localhost:8000/api/v0/cn/cn/?${formattedConstraints.join('?')}`,
+		`http://localhost:8000/api/v0/cn/cn/?${formattedConstraints.join('&')}`,
 		{
 			method: 'GET',
 			headers: headers
@@ -151,10 +152,54 @@ export async function getCallNumbers(fields: SelectedItems): Promise<Promise<Cal
 	);
 
 	// Access-Control-Allow-Origin
-	const rawCallNumbers = await fetch(request)
-		.then((response) => response.json())
-		.then((response) => response as RawCallNumber[]);
+	return fetch(request)
+		.then((response) => response.json() as Promise<RawCallNumber[]>)
+		.then((rawCallNumbers) =>
+			rawCallNumbers.map((cn) => ({
+				id: cn.id,
+				subject: cn.subject,
+				domain: cn.domain,
+				root: cn.root,
+				aspect: cn.aspect,
+				topic: cn.topic,
+				authorPublisher: cn.author_pub,
+				formatted: cn.formatted
+			}))
+		);
+
+	// return rawCallNumbers;
 
 	// let formatted = rawCallNumbers.map((cn) => convertRawCallNumberToDetail(cn))
-	return rawCallNumbers.map((cn) => convertRawCallNumberToDetail(cn));
+
+	// let formatted = [];
+
+	// let formatted: CallNumber[] = rawCallNumbers.forEach(async cn => (
+	// 	{
+	// 		id: cn.id,
+	// 		subject: await getFieldDetail('subjects', cn.subject),
+	// 		domain: await getFieldDetail('domains', cn.domain),
+	// 		root: await getFieldDetail('roots', cn.root),
+	// 		aspect: await getFieldDetail('aspects', cn.aspect),
+	// 		topic: await getFieldDetail('topics', cn.topic),
+	// 		authorPublisher: await getFieldDetail('ap', cn.author_pub),
+	// 		formatted: cn.formatted
+	// 	} as CallNumber
+	// ));
+
+	// let formatted = rawCallNumbers.map((cn) => {
+	// 	return (async () => {
+	// 		return {
+	// 			id: cn.id,
+	// 			subject: await getFieldDetail('subjects', cn.subject),
+	// 			domain: await getFieldDetail('domains', cn.domain),
+	// 			root: await getFieldDetail('roots', cn.root),
+	// 			aspect: await getFieldDetail('aspects', cn.aspect),
+	// 			topic: await getFieldDetail('topics', cn.topic),
+	// 			authorPublisher: await getFieldDetail('ap', cn.author_pub),
+	// 			formatted: cn.formatted
+	// 		} as CallNumber
+	// 	})()
+	// });
+
+	// return Promise.all(formatted)
 }

@@ -3,8 +3,15 @@
 
 <script lang="ts">
 	import CallNumberFilterModal from '$lib/call_numbers/CallNumberFilterModal.svelte';
-	import { type SelectedItems } from '$lib/call_numbers/models';
+	import {
+		// type CallNumber,
+		type SelectedItems
+		// stringifyCallNumberFields
+	} from '$lib/call_numbers/models';
 	import { getCallNumbers } from '$lib/call_numbers/lib';
+	import CallNumberDataTable from '$lib/call_numbers/CallNumberDataTable.svelte';
+	// import { Table, type DataTableOptions } from "@flowbite-svelte-plugins/datatable";
+	// import { P, Heading, Input } from "flowbite-svelte";
 
 	let querySelected: SelectedItems = $state({
 		subject: null,
@@ -18,47 +25,31 @@
 	function select(selectedItems: SelectedItems) {
 		querySelected = selectedItems;
 	}
-
-	function noQuery() {
-		return (
-			querySelected.subject == null &&
-			querySelected.domain == null &&
-			querySelected.root == null &&
-			querySelected.aspect == null &&
-			querySelected.topic == null &&
-			querySelected.authorPublisher == null
-		);
-	}
-
-	// $inspect(selected);
-	// $inspect(callNumber);
-	// $inspect(querySelected);
 </script>
 
 <div class="p-8">
 	<CallNumberFilterModal {select} />
+	{#await getCallNumbers(querySelected)}
+		loading items...
+	{:then callNumbers}
+		<!-- <ul> -->
+		<!-- Svelte demands the use of a "key" in `each` blocks: https://sveltejs.github.io/eslint-plugin-svelte/rules/require-each-key/ -->
+		<!-- {#each callNumbers as cn (cn.id)}
+				<li>
+					{cn.id}
+					{cn.subject.name}
+					{cn.domain.name}
+					{cn.root.name}
+					{cn.aspect.name}
+					{cn.topic.name}
+					{cn.authorPublisher.name}
+				</li>
+				<br />
+			{/each}
+		</ul> -->
 
-	{#if !noQuery()}
-		{#await getCallNumbers(querySelected)}
-			loading items...
-		{:then callNumbers}
-			<ul>
-				<!-- Svelte demands the use of a "key" in `each` blocks: https://sveltejs.github.io/eslint-plugin-svelte/rules/require-each-key/ -->
-				{#each callNumbers as cn (cn)}
-					{#await cn then cn}
-						<li>
-							{cn.id}
-							{cn.subject.name}
-							{cn.domain.name}
-							{cn.root.name}
-							{cn.aspect.name}
-							{cn.topic.name}
-							{cn.authorPublisher.name}
-						</li>
-						<br />
-					{/await}
-				{/each}
-			</ul>
-		{/await}
-	{/if}
+		<!-- {callNumbers} -->
+
+		<CallNumberDataTable items={callNumbers} />
+	{/await}
 </div>

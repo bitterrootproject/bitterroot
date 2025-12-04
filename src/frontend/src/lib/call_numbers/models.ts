@@ -13,7 +13,7 @@ export interface SelectedItems {
 	authorPublisher: CallNumberFieldItem | null;
 }
 
-export interface CallNumber {
+export interface CallNumber extends Record<string, CallNumberFieldItem | number | string> {
 	id: number;
 	subject: CallNumberFieldItem;
 	domain: CallNumberFieldItem;
@@ -22,6 +22,26 @@ export interface CallNumber {
 	topic: CallNumberFieldItem;
 	authorPublisher: CallNumberFieldItem;
 	formatted: string;
+}
+
+export function stringifyCallNumberFields(callNumber: CallNumber) {
+	const stringified: { [x: string]: string } = {};
+
+	for (const field in callNumber) {
+		const value = callNumber[field];
+		// Interfaces are erased at runtime, so use a shape check instead of instanceof or typeof
+		if (typeof value === 'object' && 'number' in value) {
+			// stringified[field] = String((value as CallNumberFieldItem).number);
+			stringified[field] =
+				`${(value as CallNumberFieldItem).name} (${(value as CallNumberFieldItem).number})`;
+		} else {
+			stringified[field] = String(value);
+		}
+
+		// if (typeof value == "CallNumberFieldItem")
+	}
+
+	return stringified;
 }
 
 export function formatCallNumber(selectedFields: SelectedItems): string {
