@@ -30,7 +30,8 @@ SECRET_KEY = env.str(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", True)
+DEBUG = env.bool("DEBUG", False)
+BUILD = env.bool("BUILD", False)
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
@@ -38,6 +39,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     # --- built-in apps ---
     "django.contrib.admin",
     "django.contrib.auth",
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -69,10 +72,54 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "bitterroot.root.urls"
 
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+# Directory where SvelteKit is built to
+# Sometimes the directory is different, like during a CI build pipeline or Docker build.
+FRONTEND_BUILD_DIR = env.path(
+    "FRONTEND_BUILD_DIR", BASE_DIR.parent / "frontend" / "build"
+)
+
+# Where to serve files from
+STATIC_URL = "/static/"
+
+# Where collected static files are stored
+STATIC_ROOT = BASE_DIR.parent.parent / "build" / "staticfiles"
+
+# Where to collect static files from
+STATICFILES_DIRS = [FRONTEND_BUILD_DIR]
+
+# Additional configurations for Whitenoise
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+if DEBUG:
+    WHITENOISE_ROOT = FRONTEND_BUILD_DIR
+else:
+    WHITENOISE_ROOT = STATIC_ROOT
+
+# Whitenoise settings for better performance
+WHITENOISE_MAX_AGE = (
+    31536000 if not DEBUG else 0
+)  # 1 year in production, no cache in dev
+WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: (
+    # SvelteKit's immutable files are in /_app/immutable/
+    "/immutable/" in url
+)
+
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [FRONTEND_BUILD_DIR if DEBUG else STATIC_ROOT],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -128,11 +175,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

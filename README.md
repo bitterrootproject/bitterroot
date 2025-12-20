@@ -7,3 +7,12 @@ Bitterroot is the brainchild of John Norton, a linguistics Master's student at t
 Bitterroot uses Django and SvelteKit. The ultimate goal is for full self-hostability. Federation may be considered at a later date.
 
 See the draft database schema here: https://dbdiagram.io/d/Bitterroot-draft-DB-schema-691abd9d6735e111701cd9fd (also in [docs/schema.dbml](./docs/schema.dbml))
+
+## Contributing
+
+Before committing, please run:
+
+```shell
+make lint
+make format
+```

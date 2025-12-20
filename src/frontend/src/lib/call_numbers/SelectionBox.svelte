@@ -19,7 +19,8 @@
 	} = $props();
 
 	/** Used to hand the whole selected object over to the modal (parent). */
-	const itemsDict = new Map(items.map((obj) => [obj.number, obj]));
+	const itemsDict = new Map((() => items)().map((obj) => [obj.number, obj]));
+	// Let it be known that I really f**king hate this syntax. If only TS had pass-by-reference like a real language...
 
 	/** Search string. */
 	let query = $state('');
