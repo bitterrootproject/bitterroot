@@ -3,8 +3,30 @@
         "app.css": "tailwindcss"
     },
     "[svelte]": {
-        "editor.tabSize": 2,
+        "editor.tabSize": 3,
         "editor.useTabStops": true,
         "editor.insertSpaces": false,
+    },
+    "[typescript]": {
+        "editor.tabSize": 3,
+        "editor.useTabStops": true,
+        "editor.insertSpaces": false,
+    },
+    "[javascript]": {
+        "editor.tabSize": 3,
+        "editor.useTabStops": true,
+        "editor.insertSpaces": false,
+    },
+    "[python]": {
+        // "diffEditor.ignoreTrimWhitespace": false,
+        // "editor.defaultColorDecorators": "never",
+        // "gitlens.codeLens.symbolScopes": [
+        //     "!Module"
+        // ],
+        // "editor.formatOnType": true,
+        // "editor.wordBasedSuggestions": "off"
+        "editor.tabSize": 4,
+        "editor.useTabStops": true,
+        "editor.insertSpaces": true,
     }
 }

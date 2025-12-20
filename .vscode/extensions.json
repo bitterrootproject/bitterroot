@@ -1,6 +1,16 @@
 {
     "recommendations": [
         "matt-meyers.vscode-dbml",
+        "fill-labs.dependi",
+        "tamasfe.even-better-toml",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "svelte.svelte-vscode",
+        "bradlc.vscode-tailwindcss",
+        "jaspernorth.vscode-pigments",
+        "ms-azuretools.vscode-containers",
         // "nicolas-liger.dbml-viewer"
     ]
 }

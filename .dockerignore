@@ -1,0 +1,8 @@
+.git
+.gitignore
+
+.venv
+build/
+.env
+
+**/*.sqlite3

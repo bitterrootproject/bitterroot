@@ -1,32 +1,38 @@
 <script lang="ts">
-	import type { CallNumberFieldItems } from '$lib/call_numbers/models';
+	import type { CallNumberFieldItem } from '$lib/call_numbers/models';
+	import { Label, Input } from 'flowbite-svelte';
 
 	let {
-		items,
-		placeholder = 'Search...',
+		items = [],
+		noItemsPlaceholder = 'No items found.',
 		height = 200,
-		select
+		select = () => null,
+		label,
+		disabled = false
 	}: {
-		items: CallNumberFieldItems[];
-		placeholder?: string;
+		items?: CallNumberFieldItem[];
+		noItemsPlaceholder?: string;
 		height?: number;
-		select(item: CallNumberFieldItems): void;
+		select?(item: CallNumberFieldItem): void;
+		label: string;
+		disabled?: boolean;
 	} = $props();
 
 	/** Used to hand the whole selected object over to the modal (parent). */
-	const itemsDict = new Map(items.map((obj) => [obj.id, obj]));
+	const itemsDict = new Map((() => items)().map((obj) => [obj.number, obj]));
+	// Let it be known that I really f**king hate this syntax. If only TS had pass-by-reference like a real language...
 
 	/** Search string. */
 	let query = $state('');
 	/** Which of the (filtered) items is highlighted, either via the mouse or search bar? This is just the index of the item within the filtered list. */
 	let highlightedIndex = $state(-1);
-	let listEl: HTMLElement | null = null;
-	let filtered: CallNumberFieldItems[] = $derived(
+	let listEl: HTMLElement | null = $state(null);
+	let filtered: CallNumberFieldItem[] = $derived(
 		query ? items.filter((i) => (i.name ?? '').toLowerCase().includes(query.toLowerCase())) : items
 	);
 
 	let highlightedId: string | null = $derived(
-		highlightedIndex >= 0 && filtered[highlightedIndex] ? filtered[highlightedIndex].id : null
+		highlightedIndex >= 0 && filtered[highlightedIndex] ? filtered[highlightedIndex].number : null
 	);
 
 	// keep highlighted in bounds
@@ -38,7 +44,7 @@
 	}
 
 	// scroll the highlighted item into view (non-virtualized)
-	if (listEl && (() => highlightedIndex)() >= 0) {
+	if ((() => listEl)() && (() => highlightedIndex)() >= 0) {
 		const el = document.getElementById(`option-${() => highlightedId}`);
 
 		if (el && typeof el.scrollIntoView === 'function') {
@@ -47,44 +53,39 @@
 	}
 
 	let selectedId: string = $state('');
-	function choose(item: CallNumberFieldItems) {
+	let selectedItem: CallNumberFieldItem | undefined = $derived(itemsDict.get(selectedId));
+	function choose(item: CallNumberFieldItem) {
 		// Allow deselecting an item, if it's already selected.
-		if (selectedId == item.id) {
+		if (selectedId == item.number) {
 			selectedId = '';
 			select(null!);
 		} else {
-			selectedId = item.id;
-			let selectedItem: CallNumberFieldItems | undefined = itemsDict.get(selectedId);
-			select(selectedItem!); // Pass the raw undefined, if it's there
+			selectedId = item.number;
+			// Pass the raw `undefined`, if it's there
+			select(selectedItem!);
 		}
 	}
 
-	function onKeydown(e: KeyboardEvent) {
-		if (e.key === 'ArrowDown') {
-			highlightedIndex = Math.min(highlightedIndex + 1, filtered.length - 1);
-			e.preventDefault();
-		} else if (e.key === 'ArrowUp') {
-			highlightedIndex = Math.max(highlightedIndex - 1, 0);
-			e.preventDefault();
-		} else if (e.key === 'Enter' && highlightedIndex >= 0) {
-			choose(filtered[highlightedIndex]);
-		}
-	}
+	let placeholder = $derived(
+		!selectedItem ? `Search for ${label.toLowerCase()}...` : selectedItem!.name
+	);
 </script>
 
 <div class="selection-box">
-	<input {placeholder} bind:value={query} onkeydown={onKeydown} aria-label="Search" />
+	<Label for="selectionBoxSearchBar" class="mb-0 block">{label}</Label>
+	<Input id="selectionBoxSearchBar" size="lg" {placeholder} bind:value={query} {disabled} />
 
-	<ul class="list" role="listbox" bind:this={listEl} style="max-height: {height}px;">
-		{#if filtered.length === 0}
-			<li class="item">No results</li>
-		{:else}
-			{#each filtered as item, idx (item.id)}
+	<!-- <input {placeholder} bind:value={query} onkeydown={onKeydown} aria-label="Search" /> -->
+
+	{#if filtered.length > 0}
+		<ul class="list" role="listbox" bind:this={listEl} style="max-height: {height}px;">
+			{#each filtered as item, idx (item.number)}
 				<li
 					role="option"
-					aria-selected={item.id === highlightedId}
-					id={`option-${item.id}`}
-					class="item {item.id === highlightedId ? 'highlighted' : ''} {item.id === selectedId
+					aria-selected={item.number === highlightedId}
+					id={`option-${item.number}`}
+					class="item {item.number === highlightedId ? 'highlighted' : ''} {item.number ===
+					selectedId
 						? 'selected'
 						: ''} "
 					tabindex="0"
@@ -98,20 +99,24 @@
 					onmouseenter={() => (highlightedIndex = idx)}
 					onmouseleave={() => (highlightedIndex = -1)}
 				>
-					{item.id}: {item.name}
+					{item.number}: {item.name}
 				</li>
 			{/each}
-		{/if}
-	</ul>
+		</ul>
+	{:else if filtered.length == 0 && !disabled}
+		<p>{noItemsPlaceholder}</p>
+		<!-- <ul class="list" role="listbox" style="max-height: {height}px;">
+		</ul> -->
+	{/if}
 </div>
 
 <style>
-	.selection-box input {
+	/*.selection-box input {
 		width: 100%;
 		box-sizing: border-box;
 		padding: 0.5rem;
 		margin-bottom: 0.25rem;
-	}
+	}*/
 
 	.list {
 		overflow: auto;

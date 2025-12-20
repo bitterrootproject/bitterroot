@@ -48,9 +48,9 @@ class Root(models.Model):
 class Aspect(models.Model):
     name = models.CharField()
     number = models.CharField()
-    root = models.ForeignKey(
+    root = models.ManyToManyField(
         Root,
-        on_delete=models.PROTECT,
+        # on_delete=models.PROTECT,
         related_name="aspects",
     )
 
@@ -77,7 +77,7 @@ class Topic(models.Model):
         return f"{self.number}"
 
 
-class AuthorPublisherInfo(models.Model):
+class AuthorPublisher(models.Model):
     class Meta:
         verbose_name = "author or publisher"
         verbose_name_plural = "authors and publishers"
@@ -109,8 +109,12 @@ class CallNumber(models.Model):
         Topic, on_delete=models.PROTECT, related_name="call_numbers"
     )
     author_pub = models.ForeignKey(
-        AuthorPublisherInfo, on_delete=models.PROTECT, related_name="call_numbers"
+        AuthorPublisher, on_delete=models.PROTECT, related_name="call_numbers"
     )
 
     def __str__(self) -> str:
         return f"{self.subject!r}/{self.domain!r} {self.root!r}.{self.aspect!r}.{self.topic!r} {self.author_pub!r}"
+
+    @property
+    def formatted(self) -> str:
+        return str(self)

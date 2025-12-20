@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from bitterroot.call_numbers.models import (
     Aspect,
-    AuthorPublisherInfo,
+    AuthorPublisher,
     CallNumber,
     Domain,
     Root,
@@ -43,7 +43,7 @@ class AspectAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
-        "root",
+        # "root",
     ]
 
 
@@ -56,8 +56,8 @@ class TopicAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(AuthorPublisherInfo)
-class AuthorPublisherInfoAdmin(admin.ModelAdmin):
+@admin.register(AuthorPublisher)
+class AuthorPublisherAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
