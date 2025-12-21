@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CallNumber } from './models';
+	import type { CallNumber } from '$lib/apis/call-numbers';
 
 	let {
 		items

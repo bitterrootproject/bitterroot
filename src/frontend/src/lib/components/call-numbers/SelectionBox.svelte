@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CallNumberFieldItem } from '$lib/call_numbers/models';
+	import type { CallNumberFieldItem } from '$lib/apis/call-numbers';
 	import { Label, Input } from 'flowbite-svelte';
 
 	let {

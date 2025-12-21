@@ -2,16 +2,9 @@
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p> -->
 
 <script lang="ts">
-	import CallNumberFilterModal from '$lib/call_numbers/CallNumberFilterModal.svelte';
-	import {
-		// type CallNumber,
-		type SelectedItems
-		// stringifyCallNumberFields
-	} from '$lib/call_numbers/models';
-	import { getCallNumbers } from '$lib/call_numbers/lib';
-	import CallNumberDataTable from '$lib/call_numbers/CallNumberDataTable.svelte';
-	// import { Table, type DataTableOptions } from "@flowbite-svelte-plugins/datatable";
-	// import { P, Heading, Input } from "flowbite-svelte";
+	// import  * as CnComponents from '$lib/components/callNumbers';
+	import { CallNumberDataTable, CallNumberFilterModal } from '$lib/components/call-numbers';
+	import { type SelectedItems, getCallNumbers } from '$lib/apis/call-numbers';
 
 	let querySelected: SelectedItems = $state({
 		subject: null,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, Modal, P } from 'flowbite-svelte';
 	import SelectionBox from './SelectionBox.svelte';
-	import { type SelectedItems, formatCallNumber } from '$lib/call_numbers/models';
+	import { type SelectedItems, formatCallNumber } from '$lib/apis/call-numbers';
 	import {
 		getSubjects,
 		getDomains,
@@ -9,7 +9,7 @@
 		getAspects,
 		getTopics,
 		getAuthorsPublishers
-	} from '$lib/call_numbers/lib';
+	} from '$lib/apis/call-numbers';
 
 	let {
 		select
