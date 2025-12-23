@@ -122,30 +122,32 @@ export async function getAuthorsPublishers() {
 	return getField('ap');
 }
 
-export async function getCallNumbers(fields: SelectedItems): Promise<CallNumber[]> {
+export async function getCallNumbers(fields?: SelectedItems): Promise<CallNumber[]> {
 	const headers: Headers = new Headers();
 	headers.set('Access-Control-Allow-Origin', '*');
 	headers.set('Accept', 'application/json');
 
 	const formattedConstraints: string[] = [];
 
-	if (fields.subject) {
-		formattedConstraints.push(`subject=${fields.subject.number}`);
-	}
-	if (fields.domain) {
-		formattedConstraints.push(`domain=${fields.domain.number}`);
-	}
-	if (fields.root) {
-		formattedConstraints.push(`root=${fields.root.number}`);
-	}
-	if (fields.aspect) {
-		formattedConstraints.push(`aspect=${fields.aspect.number}`);
-	}
-	if (fields.topic) {
-		formattedConstraints.push(`root=${fields.topic.number}`);
-	}
-	if (fields.author_pub) {
-		formattedConstraints.push(`root=${fields.author_pub.number}`);
+	if (fields != undefined) {
+		if (fields.subject) {
+			formattedConstraints.push(`subject=${fields.subject.number}`);
+		}
+		if (fields.domain) {
+			formattedConstraints.push(`domain=${fields.domain.number}`);
+		}
+		if (fields.root) {
+			formattedConstraints.push(`root=${fields.root.number}`);
+		}
+		if (fields.aspect) {
+			formattedConstraints.push(`aspect=${fields.aspect.number}`);
+		}
+		if (fields.topic) {
+			formattedConstraints.push(`root=${fields.topic.number}`);
+		}
+		if (fields.author_pub) {
+			formattedConstraints.push(`root=${fields.author_pub.number}`);
+		}
 	}
 
 	const request = new Request(
