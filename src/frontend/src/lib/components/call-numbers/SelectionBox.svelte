@@ -72,11 +72,11 @@
 </script>
 
 <div class="selection-box">
+	<!-- Search box -->
 	<Label for="selectionBoxSearchBar" class="mb-0 block">{label}</Label>
 	<Input id="selectionBoxSearchBar" size="lg" {placeholder} bind:value={query} {disabled} />
 
-	<!-- <input {placeholder} bind:value={query} onkeydown={onKeydown} aria-label="Search" /> -->
-
+	<!-- Selectable items -->
 	{#if filtered.length > 0}
 		<ul class="list" role="listbox" bind:this={listEl} style="max-height: {height}px;">
 			{#each filtered as item, idx (item.number)}
@@ -105,19 +105,10 @@
 		</ul>
 	{:else if filtered.length == 0 && !disabled}
 		<p>{noItemsPlaceholder}</p>
-		<!-- <ul class="list" role="listbox" style="max-height: {height}px;">
-		</ul> -->
 	{/if}
 </div>
 
 <style>
-	/*.selection-box input {
-		width: 100%;
-		box-sizing: border-box;
-		padding: 0.5rem;
-		margin-bottom: 0.25rem;
-	}*/
-
 	.list {
 		overflow: auto;
 		padding: 0;

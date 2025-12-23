@@ -4,15 +4,9 @@ export interface CallNumberFieldItem {
 	id?: number; // db pk
 }
 
-export interface SelectedItems {
-	subject: CallNumberFieldItem | null;
-	domain: CallNumberFieldItem | null;
-	root: CallNumberFieldItem | null;
-	aspect: CallNumberFieldItem | null;
-	topic: CallNumberFieldItem | null;
-	author_pub: CallNumberFieldItem | null;
-}
-
+/**
+ * The type all server-returned call numbers use.
+ */
 export interface CallNumber extends Record<string, CallNumberFieldItem | number | string> {
 	id: number;
 	subject: CallNumberFieldItem;
@@ -22,53 +16,6 @@ export interface CallNumber extends Record<string, CallNumberFieldItem | number 
 	topic: CallNumberFieldItem;
 	author_pub: CallNumberFieldItem;
 	formatted: string;
-}
-
-export function stringifyCallNumberFields(callNumber: CallNumber) {
-	const stringified: { [x: string]: string } = {};
-
-	for (const field in callNumber) {
-		const value = callNumber[field];
-		// Interfaces are erased at runtime, so use a shape check instead of instanceof or typeof
-		if (typeof value === 'object' && 'number' in value) {
-			stringified[field] =
-				`${(value as CallNumberFieldItem).name} (${(value as CallNumberFieldItem).number})`;
-		} else {
-			stringified[field] = String(value);
-		}
-	}
-
-	return stringified;
-}
-
-export function formatCallNumber(selectedFields: SelectedItems): string {
-	// LT/TU 838.1.E2 A469
-	let callNumber = '';
-	if (selectedFields.subject) {
-		callNumber += selectedFields.subject.number;
-
-		if (selectedFields.domain) {
-			callNumber += '/' + selectedFields.domain.number;
-
-			if (selectedFields.root) {
-				callNumber += ' ' + selectedFields.root.number;
-
-				if (selectedFields.aspect) {
-					callNumber += '.' + selectedFields.aspect.number;
-
-					if (selectedFields.topic) {
-						callNumber += '.' + selectedFields.topic.number;
-					}
-				}
-			}
-		}
-	}
-
-	if (selectedFields.author_pub) {
-		callNumber += ' ' + selectedFields.author_pub.number;
-	}
-
-	return callNumber;
 }
 
 async function getField(fieldName: string, constraint?: { key: string; value: string }) {
@@ -122,7 +69,7 @@ export async function getAuthorsPublishers() {
 	return getField('ap');
 }
 
-export async function getCallNumbers(fields?: SelectedItems): Promise<CallNumber[]> {
+export async function getCallNumbers(fields?: CallNumber): Promise<CallNumber[]> {
 	const headers: Headers = new Headers();
 	headers.set('Access-Control-Allow-Origin', '*');
 	headers.set('Accept', 'application/json');
@@ -160,4 +107,48 @@ export async function getCallNumbers(fields?: SelectedItems): Promise<CallNumber
 
 	// Access-Control-Allow-Origin
 	return fetch(request).then((response) => response.json() as Promise<CallNumber[]>);
+}
+
+/**
+ * Used by the call number filter modal to select certain fields. Anything dealing
+ * with server-returned call numbers should instead use the `CallNumber` type.
+ */
+export interface SelectedItems {
+	subject?: CallNumberFieldItem;
+	domain?: CallNumberFieldItem;
+	root?: CallNumberFieldItem;
+	aspect?: CallNumberFieldItem;
+	topic?: CallNumberFieldItem;
+	author_pub?: CallNumberFieldItem;
+}
+
+/** Attempt to format the call number based on the given fields. */
+export function formatSelectedFields(selectedFields: SelectedItems): string {
+	// LT/TU 838.1.E2 A469
+	let formatted = '';
+	if (selectedFields.subject) {
+		formatted += selectedFields.subject.number;
+
+		if (selectedFields.domain) {
+			formatted += '/' + selectedFields.domain.number;
+
+			if (selectedFields.root) {
+				formatted += ' ' + selectedFields.root.number;
+
+				if (selectedFields.aspect) {
+					formatted += '.' + selectedFields.aspect.number;
+
+					if (selectedFields.topic) {
+						formatted += '.' + selectedFields.topic.number;
+					}
+				}
+			}
+		}
+	}
+
+	if (selectedFields.author_pub) {
+		formatted += ' ' + selectedFields.author_pub.number;
+	}
+
+	return formatted;
 }

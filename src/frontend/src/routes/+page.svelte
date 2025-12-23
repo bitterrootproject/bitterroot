@@ -4,10 +4,10 @@
 <script lang="ts">
 	// import  * as CnComponents from '$lib/components/callNumbers';
 	import { CallNumberDataTable } from '$lib/components/call-numbers';
-	import { getCallNumbers, type SelectedItems, formatCallNumber } from '$lib/apis/call-numbers';
+	import { getCallNumbers, type CallNumber } from '$lib/apis/call-numbers';
 	import { Spinner } from 'flowbite-svelte';
 
-	let selectedCallNumber: SelectedItems | undefined = $state();
+	let selectedCallNumber: CallNumber | undefined = $state();
 </script>
 
 <div class="p-8">
@@ -21,7 +21,8 @@
 		<CallNumberDataTable items={callNumbers} bind:selected={selectedCallNumber} />
 	{/await}
 
+	<!-- Display the nicely formatted call number -->
 	{#if selectedCallNumber != null}
-		{formatCallNumber(selectedCallNumber)}
+		{selectedCallNumber.formatted}
 	{/if}
 </div>

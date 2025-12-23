@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { TableHandler, Datatable, ThSort, ThFilter, Th } from '@vincjo/datatables';
-	import { type CallNumber, type SelectedItems } from '$lib/apis/call-numbers';
+	import { type CallNumber } from '$lib/apis/call-numbers';
 	import { Button } from 'flowbite-svelte';
 
 	let {
 		items,
-		selected = $bindable()
+		selected = $bindable() // let parent element access the selected call number
 	}: {
 		items: CallNumber[];
-		selected?: SelectedItems;
+		selected?: CallNumber;
 	} = $props();
 
+	// Initialize the table
 	const table = new TableHandler((() => items)(), { rowsPerPage: 10 });
 </script>
 
@@ -39,10 +40,6 @@
 		<tbody class="cn-items">
 			{#each table.rows as row (row.id)}
 				<tr class="cn-component-row">
-					<!-- <td class="cn-component">
-						<div>{row.subject.name}</div>
-						<div>{row.subject.number}</div>
-					</td> -->
 					<td>
 						<span>{row.subject.name}</span>
 						<span>{row.subject.number}</span>
