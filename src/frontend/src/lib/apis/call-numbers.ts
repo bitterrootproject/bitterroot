@@ -10,7 +10,7 @@ export interface SelectedItems {
 	root: CallNumberFieldItem | null;
 	aspect: CallNumberFieldItem | null;
 	topic: CallNumberFieldItem | null;
-	authorPublisher: CallNumberFieldItem | null;
+	author_pub: CallNumberFieldItem | null;
 }
 
 export interface CallNumber extends Record<string, CallNumberFieldItem | number | string> {
@@ -20,7 +20,7 @@ export interface CallNumber extends Record<string, CallNumberFieldItem | number 
 	root: CallNumberFieldItem;
 	aspect: CallNumberFieldItem;
 	topic: CallNumberFieldItem;
-	authorPublisher: CallNumberFieldItem;
+	author_pub: CallNumberFieldItem;
 	formatted: string;
 }
 
@@ -64,8 +64,8 @@ export function formatCallNumber(selectedFields: SelectedItems): string {
 		}
 	}
 
-	if (selectedFields.authorPublisher) {
-		callNumber += ' ' + selectedFields.authorPublisher.number;
+	if (selectedFields.author_pub) {
+		callNumber += ' ' + selectedFields.author_pub.number;
 	}
 
 	return callNumber;
@@ -122,17 +122,6 @@ export async function getAuthorsPublishers() {
 	return getField('ap');
 }
 
-interface RawCallNumber {
-	id: number;
-	subject: CallNumberFieldItem;
-	domain: CallNumberFieldItem;
-	root: CallNumberFieldItem;
-	aspect: CallNumberFieldItem;
-	topic: CallNumberFieldItem;
-	author_pub: CallNumberFieldItem;
-	formatted: string;
-}
-
 export async function getCallNumbers(fields: SelectedItems): Promise<CallNumber[]> {
 	const headers: Headers = new Headers();
 	headers.set('Access-Control-Allow-Origin', '*');
@@ -155,8 +144,8 @@ export async function getCallNumbers(fields: SelectedItems): Promise<CallNumber[
 	if (fields.topic) {
 		formattedConstraints.push(`root=${fields.topic.number}`);
 	}
-	if (fields.authorPublisher) {
-		formattedConstraints.push(`root=${fields.authorPublisher.number}`);
+	if (fields.author_pub) {
+		formattedConstraints.push(`root=${fields.author_pub.number}`);
 	}
 
 	const request = new Request(
@@ -168,18 +157,5 @@ export async function getCallNumbers(fields: SelectedItems): Promise<CallNumber[
 	);
 
 	// Access-Control-Allow-Origin
-	return fetch(request)
-		.then((response) => response.json() as Promise<RawCallNumber[]>)
-		.then((rawCallNumbers) =>
-			rawCallNumbers.map((cn) => ({
-				id: cn.id,
-				subject: cn.subject,
-				domain: cn.domain,
-				root: cn.root,
-				aspect: cn.aspect,
-				topic: cn.topic,
-				authorPublisher: cn.author_pub,
-				formatted: cn.formatted
-			}))
-		);
+	return fetch(request).then((response) => response.json() as Promise<CallNumber[]>);
 }

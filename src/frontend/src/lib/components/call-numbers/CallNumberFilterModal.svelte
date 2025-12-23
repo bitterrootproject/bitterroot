@@ -27,7 +27,7 @@
 		root: null,
 		aspect: null,
 		topic: null,
-		authorPublisher: null
+		author_pub: null
 	});
 
 	let callNumber: string = $state('');
@@ -72,7 +72,7 @@
 				root: null,
 				aspect: null,
 				topic: null,
-				authorPublisher: null
+				author_pub: null
 			};
 		}}
 		color="light">Filter</Button
@@ -204,7 +204,7 @@
 		<SelectionBox
 			label="Author or Publisher"
 			items={available}
-			select={(e) => (selected.authorPublisher = e)}
+			select={(e) => (selected.author_pub = e)}
 		/>
 	{/await}
 

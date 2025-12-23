@@ -12,7 +12,7 @@
 		root: null,
 		aspect: null,
 		topic: null,
-		authorPublisher: null
+		author_pub: null
 	});
 
 	function select(selectedItems: SelectedItems) {
@@ -35,7 +35,7 @@
 					{cn.root.name}
 					{cn.aspect.name}
 					{cn.topic.name}
-					{cn.authorPublisher.name}
+					{cn.author_pub.name}
 				</li>
 				<br />
 			{/each}
