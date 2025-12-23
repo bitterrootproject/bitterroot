@@ -5,10 +5,12 @@
 
 	let {
 		items,
-		selected = $bindable() // let parent element access the selected call number
+		selected = $bindable(), // let parent element access the selected call number
+		selectable = true
 	}: {
 		items: CallNumber[];
 		selected?: CallNumber;
+		selectable?: boolean;
 	} = $props();
 
 	// Initialize the table
@@ -25,7 +27,9 @@
 				<ThSort {table} field="aspect">Aspect</ThSort>
 				<ThSort {table} field="topic">Topic</ThSort>
 				<ThSort {table} field="author_pub">Root</ThSort>
-				<Th></Th>
+				{#if selectable}
+					<Th></Th>
+				{/if}
 			</tr>
 			<tr>
 				<ThFilter {table} field="subject" />
@@ -34,7 +38,9 @@
 				<ThFilter {table} field="aspect" />
 				<ThFilter {table} field="topic" />
 				<ThFilter {table} field="author_pub" />
-				<Th></Th>
+				{#if selectable}
+					<Th></Th>
+				{/if}
 			</tr>
 		</thead>
 		<tbody class="cn-items">
@@ -65,22 +71,24 @@
 						<span>{row.author_pub.number}</span>
 					</td>
 
-					<!--
-						Select this call number and see articles that use it.
-						This is gross, and I hate it as much as you do, but this is what I had to do to
-						get it looking good. Overriding classes, inline style rules... ugh.
-					-->
-					<td style="padding-left: 4px; padding-right: 4px; min-width: fit-content;">
-						<Button
-							size="xs"
-							class="relative -top-px ml-px justify-center rounded-sm px-1.5 py-[.2rem]"
-							onclick={() => {
-								selected = row;
-							}}
-						>
-							Select
-						</Button>
-					</td>
+					{#if selectable}
+						<!--
+							Select this call number. Could be used by parent to display articles that use it.
+							This is gross, and I hate it as much as you do, but this is what I had to do to
+							get it looking good. Overriding classes, inline style rules... ugh.
+						-->
+						<td style="padding-left: 4px; padding-right: 4px; min-width: fit-content;">
+							<Button
+								size="xs"
+								class="relative -top-px ml-px justify-center rounded-sm px-1.5 py-[.2rem]"
+								onclick={() => {
+									selected = row;
+								}}
+							>
+								Select
+							</Button>
+						</td>
+					{/if}
 				</tr>
 			{/each}
 		</tbody>
