@@ -16,9 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import include, path, re_path
-
-from bitterroot.root.views import SvelteAppView
+from django.urls import include, path
 
 urlpatterns = [
     # Django Admin
@@ -30,5 +28,5 @@ urlpatterns = [
     path("api/v0/cn/", include("bitterroot.call_numbers.urls", namespace="cn")),
     path("api/v0/auth/", include("rest_framework.urls", namespace="rest_framework")),
     # Treat all other paths as frontend files.
-    re_path(r"^.*$", SvelteAppView.as_view(), name="svelte-app"),
+    # re_path(r"^.*$", SvelteAppView.as_view(), name="svelte-app"),
 ]

@@ -62,9 +62,37 @@
 	border-radius: 8px;
 }
 
+a {
+	text-decoration: underline;
+	&:hover {
+		text-decoration: none;
+	}
+	&:target {
+		text-decoration: dotted;
+	}
+	/* &:visited {
+		color: var(--color-gray-500);
+	} */
+}
+
 @layer base {
 	/* disable chrome cancel button */
 	input[type='search']::-webkit-search-cancel-button {
 		display: none;
+	}
+}
+
+@layer utilities {
+	/* .no-ring .focus\:ring-primary-500,
+	.no-ring .dark\:focus\:ring-primary-500 {
+		&:focus {
+			--tw-ring-color: none;
+		}
+	} */
+
+	.no-ring {
+		&:focus {
+			--tw-ring-color: none !important;
+		}
 	}
 }

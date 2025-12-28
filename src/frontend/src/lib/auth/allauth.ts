@@ -126,7 +126,7 @@ export function getSessionToken() {
 
 async function request(method: string, path: string, data?: object, headers?: Headers) {
 	let options: RequestInit = {
-		method,
+		method
 		// headers,
 		// credentials: '',
 		// body: '',
@@ -189,7 +189,7 @@ async function request(method: string, path: string, data?: object, headers?: He
 	return msg;
 }
 
-export async function login(data: object) {
+export async function login(data: { email: string; password: string }) {
 	return await request('POST', URLs.LOGIN, data);
 }
 
@@ -201,7 +201,7 @@ export async function logout() {
 	return await request('DELETE', URLs.SESSION);
 }
 
-export async function signUp(data: object) {
+export async function signUp(data: { username: string; email: string; password: string }) {
 	return await request('POST', URLs.SIGNUP, data);
 }
 

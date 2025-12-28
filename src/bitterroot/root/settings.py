@@ -33,7 +33,8 @@ SECRET_KEY = env.str(
 DEBUG = env.bool("DEBUG", False)
 BUILD = env.bool("BUILD", False)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# ALLOWED_HOSTS = ["127.0.0.1", "localhost", "localhost:8000"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # --- 3rd-party apps ---
+    "modern_csrf",
     "debug_toolbar",
     "django_extensions",
     "rest_framework",
@@ -70,7 +72,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "modern_csrf.middleware.ModernCsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -198,6 +200,12 @@ CORS_ALLOW_HEADERS = (
     *default_headers,
     "access-control-allow-origin",
 )
+# CSRF_COOKIE_HTTPONLY = False
+# CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+# # CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+CSRF_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ORIGINS_WHITELIST = ["http://localhost:5173"]
 
 # Django REST Framework settings
 
