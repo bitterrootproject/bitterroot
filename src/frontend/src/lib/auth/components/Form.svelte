@@ -2,19 +2,21 @@
 	// import FormErrors from "./FormErrors.svelte";
 	// import Input from "./Input.svelte";
 	import type { FormField, FieldData } from './types';
-	import { Input, Label, Button, Spinner, Alert } from 'flowbite-svelte';
+	import { Input, Label, Button, Spinner, Alert, Helper } from 'flowbite-svelte';
 	import { Info } from '@lucide/svelte';
 	import { validate as isValidEmail } from 'email-validator';
 	import parsePhoneNumber from 'libphonenumber-js';
-	import type { Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
+	import { clampString } from '$lib/utils';
 
-	let loading = $state(false);
-
-	async function artificialDelay() {
-		loading = true;
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-		loading = false;
-	}
+	/** Contains whether each field is valid, and the error text and class(es) to apply to said field. */
+	let fieldStatus: {
+		[fieldName: string]: {
+			isValid?: boolean;
+			class?: string;
+			text?: string;
+		};
+	} = $state({});
 
 	let {
 		header,
@@ -25,10 +27,7 @@
 			class: ''
 		},
 		errors,
-		fieldErrors = $bindable({}),
-		// action_button_text,
-		// action_button_class = 'btn-primary px-8 mt-4 btn-block',
-		fetching = false,
+		loading = false,
 		onsubmit,
 		title,
 		children
@@ -41,44 +40,94 @@
 			class?: string;
 		};
 		errors: { message: string }[];
-		fieldErrors?: FieldData;
-		fetching?: boolean;
+		loading?: boolean;
 		onsubmit(): void;
 		title: string;
 		children?: Snippet;
 	} = $props();
 
-	// if (!fieldErrors) {
-	// 	fieldErrors = $state<{ [fieldName: string]: string }>({});
-	// }
+	async function artificialDelay() {
+		loading = true;
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		loading = false;
+	}
 
-	function validateField(name: string): boolean {
+	/** Get the specified form field, printing an error to the console if it's not found. */
+	function getFormField(fieldName: string): FormField | undefined {
+		const f = fields.find((field) => field.name == fieldName);
+		if (!f) {
+			console.error(`Field with name "${fieldName}" not found.`);
+		}
+		return f;
+	}
+
+	/** Does this field have error text? */
+	function fieldHasErrorText(fieldName: string): boolean {
+		return (
+			fieldStatus[fieldName] &&
+			!fieldStatus[fieldName].isValid &&
+			fieldStatus[fieldName].text != undefined
+		);
+	}
+
+	/** Validate the specified field. */
+	function validateField(fieldName: string): boolean {
 		// It's safe to use `!` here, as we can safely assume that field exists.
-		const f = fields.find((field) => field.name == name)!;
-		const d = data[f.name] || '';
+		const f = getFormField(fieldName)!;
+		const d = data[fieldName] || '';
+
+		fieldStatus[fieldName] = {
+			isValid: undefined,
+			class: undefined,
+			text: undefined
+		};
 
 		if (f.required && d.trim() === '') {
-			fieldErrors[name] = 'This field is required';
+			fieldStatus[fieldName].isValid = false;
+			fieldStatus[fieldName].text = 'This field is required.';
 			return false;
 		}
 
+		// Do some basic checking based on input type
+		// email
 		if (
 			f.type == 'email' &&
 			d.split('@')[1] != 'localhost' && // Emails ending in localhost (like "admin@localhost") are allowed.
 			!isValidEmail(d)
 		) {
-			fieldErrors[name] = `"${d}" is not a valid email address.`;
+			fieldStatus[fieldName].isValid = false;
+			fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid email address.`;
 			return false;
-		} else if (f.type == 'phone' && !parsePhoneNumber(d)?.isValid()) {
-			fieldErrors[name] = `"${d}" is not a valid phone number.`;
+		}
+		// phone
+		else if (f.type == 'phone' && !parsePhoneNumber(d)?.isValid()) {
+			fieldStatus[fieldName].isValid = false;
+			fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid phone number.`;
 			return false;
 		}
 
+		// If the field has its own validator, run it.
+		if (f.validator) {
+			const fv = f.validator!;
+
+			if (!fv.func(data)) {
+				fieldStatus[fieldName] = {
+					isValid: false,
+					class: fv.invalidClass,
+					text: fv.invalidText
+				};
+
+				return false;
+			}
+		}
+
 		// Clear error if valid
-		delete fieldErrors[name];
+		// delete fieldStatus[fieldName];
+		fieldStatus[fieldName].isValid = true;
 		return true;
 	}
 
+	/** Validate the whole form. */
 	function validateForm(): boolean {
 		let isValid = true;
 		fields.forEach((field) => {
@@ -86,82 +135,112 @@
 				isValid = false;
 			}
 		});
+
 		return isValid;
 	}
 
 	function handleSubmit() {
+		// console.log(`Set loading to ${loading}`)
+		// artificialDelay();
+		// console.log(`Set loading to ${loading}`)
 		if (validateForm()) {
-			artificialDelay();
 			onsubmit();
 		}
 	}
 </script>
 
+<!-- Page's title in the <head> element. -->
 <svelte:head>
 	<title>{title} | Bitterroot Web Library</title>
 </svelte:head>
 
 <h1 class="mb-10 text-2xl">{header}</h1>
 
+<!-- If the parent element put anything (like arbitrary text fields) in the slot, render it. -->
 {#if children}
 	{@render children()}
 {/if}
 
-<form class="mt-5">
-	<div class="fancy-form mb-3 flex flex-col space-y-2">
+<!-- The actual form -->
+<form class="mt-5" autocomplete="off" method="POST" onsubmit={handleSubmit}>
+	<div class="mb-3 flex flex-col space-y-2">
 		{#each fields as field (field.name)}
-			<div class="fancy-form-field">
+			<div>
 				<!-- Label for input field -->
-				<div class="inline-flex">
-					<Label for={field.name} class="mb-2">
+				<div class="mb-1 flex">
+					<Label for={field.name} class="">
 						{field.label}
 					</Label>
+					<!-- Display a pretty red asterisk if the field is required. -->
 					{#if field.required}
 						<span class="text-sm text-red-700">&nbsp;*</span>
 					{/if}
+
+					<!-- Validation message for this field (if present) -->
+					{#if fieldHasErrorText(field.name)}
+						<Helper class="mr-0 ml-auto self-end" color="red">
+							{fieldStatus[field.name].text}
+						</Helper>
+					{/if}
 				</div>
-				<!-- The input field itself -->
+
+				<!--
+					The input field itself
+					Set the field's color to red if invalid and the validator says so (or doesn't have that setting set).
+					Also, prevent Prettier from formatting this. Its attempts to do so just make it unreadable.
+				-->
+				<!-- prettier-ignore -->
 				<Input
 					id={field.name}
 					type={field.type ?? 'text'}
 					placeholder={field.placeholder ?? ' '}
 					required={field.required}
 					bind:value={data[field.name]}
-					onblur={() => validateField(field.name)}
+					oninput={() => validateField(field.name)}
+					color={
+						(field.validator?.invalidOutline ?? true)
+							&& fieldStatus[field.name]
+							&& !fieldStatus[field.name].isValid
+						? 'red'
+						: undefined
+					}
+					class="mb-2"
 				/>
-				<!-- Error for this field (if present) -->
-				{#if fieldErrors[field.name]}
-					<p class="mt-1 text-sm text-red-600">{fieldErrors[field.name]}</p>
-				{/if}
 			</div>
 		{/each}
 	</div>
 
 	<!-- Display any errors returned by the server. -->
 	<div class="my-4">
-		{#each errors as err (err)}
+		{#if errors.length == 1}
+			<!-- If there's only one error, just display it without any additional formatting. -->
 			<Alert class="flex pb-4">
-				<!-- <InfoCircleOutline class="shrink-0 h-6 w-6" /> -->
 				<Info />
-				{err.message}
+				{errors[0].message}
 			</Alert>
-		{/each}
+		{:else if errors.length > 1}
+			<!-- If there's more than one error, display them in an unordered list. -->
+			<Alert class="flex pb-4">
+				<Info />
+				<ul>
+					{#each errors as err (err)}
+						<li>{err.message}</li>
+					{/each}
+				</ul>
+			</Alert>
+		{/if}
 	</div>
 
-	<Button class={actionButton.class} disabled={fetching} onclick={handleSubmit} {loading}>
-		<!-- {#if fetching}
-			<Spinner size=4 />
+	<Button
+		class={actionButton.class}
+		disabled={loading}
+		{loading}
+		type="submit"
+		onclick={handleSubmit}
+	>
+		<!-- {#if loading}
+			<Spinner size="4" />
 		{/if} -->
 		{actionButton.text}
 	</Button>
 </form>
-
-<style>
-	:global(input) {
-		&:invalid:not(:placeholder-shown) {
-			outline: 2px solid transparent;
-			outline-color: var(--color-red-700);
-			outline-offset: -1px;
-		}
-	}
-</style>

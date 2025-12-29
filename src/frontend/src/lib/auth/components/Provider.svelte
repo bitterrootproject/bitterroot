@@ -6,7 +6,7 @@
 
 	let {
 		provider,
-		callbackUrl = '/accounts/provider/callback',
+		callbackUrl = '/account/provider/callback',
 		useIcons = true,
 		useBrandColors = true,
 		color = 'alternative',

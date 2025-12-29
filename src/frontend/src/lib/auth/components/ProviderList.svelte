@@ -7,7 +7,7 @@
 
 	let {
 		useIcons = true,
-		callbackUrl = '/accounts/provider/callback',
+		callbackUrl = '/account/provider/callback',
 		urlParam
 	}: {
 		useIcons?: boolean;

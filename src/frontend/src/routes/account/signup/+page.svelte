@@ -12,16 +12,15 @@
 	const auth = useAuth();
 	const nextUrl = $derived(page.url.searchParams.get('next') || '/');
 
-	let data = $state({
+	let data: FieldData = $state({
 		username: '',
 		email: '',
 		password1: '',
 		password2: ''
 	});
 
-	let fetching = $state(false);
+	let loading = $state(false);
 	let response: AuthResponse = $state({});
-	let fieldErrors: FieldData = $state({});
 
 	const fields: FormField[] = [
 		{
@@ -45,17 +44,21 @@
 			name: 'password2',
 			label: 'Password (verify)',
 			type: 'password',
-			required: true
+			required: true,
+			validator: {
+				func(fieldData): boolean {
+					const pw1 = fieldData['password1'];
+					const pw2 = fieldData['password2'];
+					return pw1 == pw2;
+				},
+				invalidText: 'Password does not match.'
+			}
 		}
 	];
 
 	function submit() {
-		if (data.password1 != data.password2) {
-			fieldErrors['password2'] = 'Password does not match.';
-			return;
-		}
-
-		fetching = true;
+		loading = true;
+		response.errors = [];
 
 		signUp({
 			username: data.username,
@@ -74,7 +77,7 @@
 					: { errors: [{ message: 'An unexpected error occurred.' }] };
 			})
 			.then(() => {
-				fetching = false;
+				loading = false;
 			});
 	}
 </script>
@@ -84,13 +87,12 @@
 	header="Sign up for Bitterroot Web"
 	bind:data
 	actionButton={{ text: 'Sign up' }}
-	{fetching}
+	{loading}
 	errors={response.errors ?? []}
 	onsubmit={submit}
 	title="Sign up"
-	bind:fieldErrors
 >
-	Already signed up? <a href="/accounts/login" class="visited:text-black">Click here</a> to log in.
+	Already signed up? <a href="/account/login" class="visited:text-black">Click here</a> to log in.
 </Form>
 
 {#if hasProviders()}

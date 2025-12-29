@@ -34,11 +34,12 @@
 		password: ''
 	});
 
-	let fetching = $state(false);
+	let loading = $state(false);
 	let response: AuthResponse = $state({});
 
 	function submit() {
-		fetching = true;
+		loading = true;
+		response.errors = [];
 
 		login({
 			email: data.email,
@@ -74,7 +75,7 @@
 						};
 			})
 			.then(() => {
-				fetching = false;
+				loading = false;
 			});
 	}
 </script>
@@ -86,11 +87,13 @@
 	actionButton={{
 		text: 'Login'
 	}}
-	{fetching}
+	{loading}
 	errors={response.errors ?? []}
 	onsubmit={submit}
 	title="Login"
-/>
+>
+	New here? <a href="/account/signup" class="visited:text-black">Click here</a> to sign up.
+</Form>
 
 {#if hasProviders()}
 	<div class="my-6 flex items-center gap-4">

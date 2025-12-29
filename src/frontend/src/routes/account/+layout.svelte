@@ -23,11 +23,14 @@
 		background-color: white;
 	}
 
-	:has(.auth-form-container) {
+	:root {
 		background-color: grey;
+	}
+
+	:has(.auth-form-container) {
 		width: 100vw;
 		height: 100vh;
-		margin: none;
+		margin: 0px;
 		display: flex;
 	}
 </style>
