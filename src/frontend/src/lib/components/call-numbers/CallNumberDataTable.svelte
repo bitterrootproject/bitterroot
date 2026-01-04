@@ -26,7 +26,7 @@
 				<ThSort {table} field="root">Root</ThSort>
 				<ThSort {table} field="aspect">Aspect</ThSort>
 				<ThSort {table} field="topic">Topic</ThSort>
-				<ThSort {table} field="author_pub">Root</ThSort>
+				<ThSort {table} field="author_pub">Author/Publisher</ThSort>
 				{#if selectable}
 					<Th></Th>
 				{/if}
@@ -95,10 +95,10 @@
 	</table>
 </Datatable>
 
-<style lang="scss">
+<style>
 	tr.cn-component-row td > span:last-child {
 		float: right;
-		// margin-right: 0;
+		/* margin-right: 0; */
 		font-weight: 100;
 		font-size: x-small;
 		position: relative;
