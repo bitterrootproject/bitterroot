@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+		"target": "es2020",
+		// "allowImportingTsExtensions": true,
+		"allowJs": false,
+		// "checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler"
+	}
+}
