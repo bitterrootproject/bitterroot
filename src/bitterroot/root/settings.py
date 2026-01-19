@@ -33,7 +33,8 @@ SECRET_KEY = env.str(
 DEBUG = env.bool("DEBUG", False)
 BUILD = env.bool("BUILD", False)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# ALLOWED_HOSTS = ["127.0.0.1", "localhost", "localhost:8000"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -48,10 +49,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # --- 3rd-party apps ---
+    "modern_csrf",
     "debug_toolbar",
     "django_extensions",
     "rest_framework",
     "corsheaders",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.dummy",
+    # "allauth.mfa",
+    "allauth.headless",
+    "allauth.usersessions",
     # --- local apps ---
     "bitterroot.articles",
     "bitterroot.call_numbers",
@@ -63,11 +72,12 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "modern_csrf.middleware.ModernCsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "bitterroot.root.urls"
@@ -190,6 +200,12 @@ CORS_ALLOW_HEADERS = (
     *default_headers,
     "access-control-allow-origin",
 )
+# CSRF_COOKIE_HTTPONLY = False
+# CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+# # CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+CSRF_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ORIGINS_WHITELIST = ["http://localhost:5173"]
 
 # Django REST Framework settings
 
@@ -197,3 +213,30 @@ CORS_ALLOW_HEADERS = (
 #     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
 #     "PAGE_SIZE": 10,
 # }
+
+
+
+# Allauth Settings
+
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
+ACCOUNT_LOGIN_BY_CODE_ENABLED = True
+ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+
+HEADLESS_ONLY = True
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": "/account/verify-email/{key}",
+    "account_reset_password": "/account/password/reset",
+    "account_reset_password_from_key": "/account/password/reset/key/{key}",
+    "account_signup": "/account/signup",
+    "socialaccount_login_error": "/account/provider/callback",
+}
+HEADLESS_SERVE_SPECIFICATION = True
+
+MFA_SUPPORTED_TYPES = ["totp", "recovery_codes", "webauthn"]
+MFA_PASSKEY_LOGIN_ENABLED = True
+MFA_PASSKEY_SIGNUP_ENABLED = True
