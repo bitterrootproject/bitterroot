@@ -1,39 +1,30 @@
 <script lang="ts">
 	import { Button, Modal, P } from 'flowbite-svelte';
 	import SelectionBox from './SelectionBox.svelte';
-	import { type SelectedItems, formatCallNumber } from '$lib/call_numbers/models';
 	import {
 		getSubjects,
 		getDomains,
 		getRoots,
 		getAspects,
 		getTopics,
-		getAuthorsPublishers
-	} from '$lib/call_numbers/lib';
+		getAuthorsPublishers,
+		formatSelectedFields,
+		type SelectedItems
+	} from '$lib/apis/call-numbers';
 
 	let {
 		select
-		// buttonText: button_text
 	}: {
 		select(selectedItems: SelectedItems): void;
-		// buttonText: string;
 	} = $props();
 
 	let isOpen = $state(false);
 
-	let selected: SelectedItems = $state({
-		subject: null,
-		domain: null,
-		root: null,
-		aspect: null,
-		topic: null,
-		authorPublisher: null
-	});
+	// initialize with default state
+	let selected: SelectedItems = $state({});
 
 	let callNumber: string = $state('');
-	// let callNumber: string = $derived(callNumberDirect);
 
-	//{ action, data }: { action: string; data: FormData; }
 	function actionHandler({ action }: { action: string }) {
 		switch (action) {
 			case 'success':
@@ -48,32 +39,15 @@
 				break;
 		}
 	}
-
-	// $inspect(selected);
 </script>
 
 <div class="flex">
-	<!-- <Input
-		placeholder="Call number..."
-		bind:value={callNumber}
-		aria-label="Call number"
-		class="inline-flex max-w-1/6"
-		disabled={true}
-	/> -->
-
 	<!-- placed somewhere in the DOM with a relative position -->
 	<Button
 		onclick={() => {
 			isOpen = true;
-			selected = {
-				// clear out the previous selection
-				subject: null,
-				domain: null,
-				root: null,
-				aspect: null,
-				topic: null,
-				authorPublisher: null
-			};
+			// clear out the previous selection
+			selected = {};
 		}}
 		color="light">Filter</Button
 	>
@@ -82,8 +56,10 @@
 		onclick={() => {
 			select(null!);
 			select(selected);
-		}}>Search</Button
+		}}
 	>
+		Search
+	</Button>
 
 	<P>Call Number: {callNumber}</P>
 </div>
@@ -102,10 +78,10 @@
 			select={(e) => {
 				// Clear all dependent fields
 				selected.subject = e;
-				selected.domain = null;
-				selected.root = null;
-				selected.aspect = null;
-				selected.topic = null;
+				selected.domain = undefined;
+				selected.root = undefined;
+				selected.aspect = undefined;
+				selected.topic = undefined;
 			}}
 		/>
 	{/await}
@@ -121,9 +97,9 @@
 				select={(e) => {
 					// Clear all dependent fields
 					selected.domain = e;
-					selected.root = null;
-					selected.aspect = null;
-					selected.topic = null;
+					selected.root = undefined;
+					selected.aspect = undefined;
+					selected.topic = undefined;
 				}}
 			/>
 		{/await}
@@ -146,8 +122,8 @@
 				select={(e) => {
 					// Clear all dependent fields
 					selected.root = e;
-					selected.aspect = null;
-					selected.topic = null;
+					selected.aspect = undefined;
+					selected.topic = undefined;
 				}}
 			/>
 		{/await}
@@ -170,7 +146,7 @@
 				select={(e) => {
 					// Clear all dependent fields
 					selected.aspect = e;
-					selected.topic = null;
+					selected.topic = undefined;
 				}}
 			/>
 		{/await}
@@ -204,15 +180,19 @@
 		<SelectionBox
 			label="Author or Publisher"
 			items={available}
-			select={(e) => (selected.authorPublisher = e)}
+			select={(e) => (selected.author_pub = e)}
 		/>
 	{/await}
 
 	{#snippet footer()}
 		<Button type="submit" value="decline" color="alternative">Cancel</Button>
-		<Button type="submit" value="success" onclick={() => (callNumber = formatCallNumber(selected))}
-			>Filter & Search</Button
+		<Button
+			type="submit"
+			value="success"
+			onclick={() => (callNumber = formatSelectedFields(selected))}
 		>
-		<P align="right" class="ml-auto">{formatCallNumber(selected)}</P>
+			Filter & Search
+		</Button>
+		<P align="right" class="ml-auto">{formatSelectedFields(selected)}</P>
 	{/snippet}
 </Modal>

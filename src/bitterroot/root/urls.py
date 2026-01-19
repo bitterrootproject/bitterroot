@@ -16,25 +16,17 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import include, path, re_path
-
-from bitterroot.root.views import SvelteAppView
+from django.urls import include, path
 
 urlpatterns = [
+    # Django Admin
     path("admin/", admin.site.urls),
+    # Allauth
+    path("accounts/", include("allauth.urls")),
+    path("_allauth/", include("allauth.headless.urls")),
+    # API endpoints
     path("api/v0/cn/", include("bitterroot.call_numbers.urls", namespace="cn")),
     path("api/v0/auth/", include("rest_framework.urls", namespace="rest_framework")),
-    # path("", TemplateView.as_view(template_name='static/index.html'), name="svelte-root"),
-    # re_path(r"^(?!(_app|static|media|admin)/).*$", SvelteAppView.as_view(), name="svelte-app")
-    # re_path(
-    #     r'^static/_app/(?P<path>. *)$',
-    #     serve,
-    #     {'document_root': settings.STATIC_ROOT / '_app'},
-    #     name='svelte-assets'
-    # ),
-    re_path(r"^.*$", SvelteAppView.as_view(), name="svelte-app"),
+    # Treat all other paths as frontend files.
+    # re_path(r"^.*$", SvelteAppView.as_view(), name="svelte-app"),
 ]
-
-# # Serve static files in development
-# if settings.DEBUG:
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

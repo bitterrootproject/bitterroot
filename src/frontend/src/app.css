@@ -35,36 +35,47 @@
 @source '../node_modules/simple-datatables/dist';
 @source '../node_modules/@flowbite-svelte-plugins/datatable/dist';
 
-/* :has(.datatable-wrapper) {
-	display: flex;
-} */
-
-.datatable-search {
-	display: inline-flex;
-}
-
-.datatable-pagination .datatable-active a,
-.datatable-pagination .datatable-active a:focus,
-.datatable-pagination .datatable-active a:hover,
-.datatable-pagination .datatable-active button,
-.datatable-pagination .datatable-active button:focus,
-.datatable-pagination .datatable-active button:hover {
-	background-color: #ffe4de;
-	cursor: default;
-}
-
-.datatable-wrapper .datatable-table tbody tr.selected {
-	background-color: #fff1ee !important;
-}
-
-.datatable-input {
-	border: 1px solid lightgrey;
-	border-radius: 8px;
-}
-
 @layer base {
 	/* disable chrome cancel button */
 	input[type='search']::-webkit-search-cancel-button {
 		display: none;
+	}
+
+	a {
+		text-decoration: underline;
+		&:hover {
+			text-decoration: none;
+		}
+		&:target {
+			text-decoration: dotted;
+		}
+		/* &:visited {
+			color: var(--color-gray-500);
+		} */
+	}
+
+	ul,
+	ol {
+		padding-left: 1em;
+		margin-left: 0.25em;
+
+		& > li {
+			padding-bottom: 0.25em;
+		}
+	}
+	ul {
+		list-style-type: disc;
+	}
+
+	li:last-child {
+		padding-bottom: 0em !important;
+	}
+}
+
+@layer utilities {
+	.no-ring {
+		&:focus {
+			--tw-ring-color: none !important;
+		}
 	}
 }
