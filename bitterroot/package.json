@@ -1,0 +1,16 @@
+{
+	"name": "@bitterroot/bitterroot",
+	"version": "1.0.0",
+	"description": "",
+	"license": "ISC",
+	"author": "",
+	"type": "commonjs",
+	"main": "index.js",
+	"scripts": {
+		"dev": "uv run ./manage.py runserver",
+		"format": "uv run ruff format",
+		"check": "uv run ruff check",
+		"lint": "uv run ruff check --fix"
+	},
+	"devDependencies": {}
+}

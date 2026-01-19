@@ -8,6 +8,10 @@ Bitterroot uses Django and SvelteKit. The ultimate goal is for full self-hostabi
 
 See the draft database schema here: https://dbdiagram.io/d/Bitterroot-draft-DB-schema-691abd9d6735e111701cd9fd (also in [docs/schema.dbml](./docs/schema.dbml))
 
+## Tools
+
+Bitterroot uses [Turborepo](https://turborepo.dev/docs/getting-started) to manage the monorepo.
+
 ## Contributing
 
 Before committing, please run:
