@@ -1,4 +1,4 @@
-dj-dev:
+dev:
 	uv run manage runserver --nostatic
 
 docker-build:
@@ -18,11 +18,6 @@ docker:
 	@echo "\n\n\033[1;32mRunning Docker image\033[0m\n"
 	$(MAKE) docker-run
 
-sv-build-watch:
-	cd src/frontend
-	npm run build:watch
-	cd ../..
-
 schema:
 	@echo "Generating OpenAPI schema to docs/schema.yml"
 	@if [ -f docs/schema.yml ]; then\
@@ -33,21 +28,14 @@ schema:
 	uv run manage generateschema > docs/schema.yml
 
 lint:
-	@echo "\033[1;34mLint Python\033[0m\n"
-	uv run ruff check --fix
-	@echo "\n\n\033[1;34mLint Svelte\033[0m\n"
-	cd src/frontend &&\
-		npm run check &&\
-		npm run format
-	@echo @echo "\n\n\033[1;34mCheck for whitespace differences\033[0m\n"
-	git diff-index --check HEAD --
-
-format:
-	@echo "\033[1;34mFormat Python\033[0m\n"
+	@echo "\033[1;34mBackend: Format\033[0m\n"
 	uv run ruff format
-	@echo "\n\n\033[1;34mFormat Svelte\033[0m\n"
-	cd src/frontend &&\
-		npm run format
+
+	@echo "\033[1;34mBackend: Lint\033[0m\n"
+	uv run ruff check --fix
+
+	@echo "\n\n\033[1;34mCheck for whitespace differences\033[0m\n"
+	git diff-index --check HEAD --
 
 # build:
 # 	$(MAKE) docker-build
