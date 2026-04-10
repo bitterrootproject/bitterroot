@@ -89,36 +89,39 @@
 			return false;
 		}
 
-		// Do some basic checking based on input type
-		// email
-		if (
-			f.type == 'email' &&
-			d.split('@')[1] != 'localhost' && // Emails ending in localhost (like "admin@localhost") are allowed.
-			!isValidEmail(d)
-		) {
-			fieldStatus[fieldName].isValid = false;
-			fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid email address.`;
-			return false;
-		}
-		// phone
-		else if (f.type == 'phone' && !parsePhoneNumber(d)?.isValid()) {
-			fieldStatus[fieldName].isValid = false;
-			fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid phone number.`;
-			return false;
-		}
-
-		// If the field has its own validator, run it.
-		if (f.validator) {
-			const fv = f.validator!;
-
-			if (!fv.func(data)) {
-				fieldStatus[fieldName] = {
-					isValid: false,
-					class: fv.invalidClass,
-					text: fv.invalidText
-				};
-
+		// Skip all of this if validation is disabled.
+		if (f.validateField != false) {
+			// Do some basic checking based on input type
+			// email
+			if (
+				f.type == 'email' &&
+				d.split('@')[1] != 'localhost' && // Emails ending in localhost (like "admin@localhost") are allowed.
+				!isValidEmail(d)
+			) {
+				fieldStatus[fieldName].isValid = false;
+				fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid email address.`;
 				return false;
+			}
+			// phone
+			else if (f.type == 'phone' && !parsePhoneNumber(d)?.isValid()) {
+				fieldStatus[fieldName].isValid = false;
+				fieldStatus[fieldName].text = `"${clampString(d)}" is not a valid phone number.`;
+				return false;
+			}
+
+			// If the field has its own validator, run it.
+			if (f.validator) {
+				const fv = f.validator!;
+
+				if (!fv.func(data)) {
+					fieldStatus[fieldName] = {
+						isValid: false,
+						class: fv.invalidClass,
+						text: fv.invalidText
+					};
+
+					return false;
+				}
 			}
 		}
 

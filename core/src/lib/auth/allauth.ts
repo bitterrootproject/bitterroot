@@ -20,7 +20,7 @@ export enum Client {
 export const settings = {
 	client: Client.BROWSER,
 	baseUrl: `http://localhost:8000/_allauth/${Client.BROWSER}/v1`,
-	withCredentials: false
+	withCredentials: true
 };
 
 export enum AuthProcess {
@@ -155,7 +155,6 @@ async function request(method: string, path: string, data?: object, headers?: He
 	if (path !== URLs.CONFIG) {
 		if (settings.client === Client.BROWSER) {
 			options.headers.append('X-CSRFToken', getCSRFToken());
-			// options.headers['X-CSRFToken'] = getCSRFToken()
 		} else if (settings.client === Client.APP) {
 			// IMPORTANT!: Do NOT use `Client.APP` in a browser context, as you will
 			// be vulnerable to CSRF attacks. This logic is only here for
@@ -163,7 +162,7 @@ async function request(method: string, path: string, data?: object, headers?: He
 			// options.headers.append('User-Agent', 'bitterroot desktop');
 			const sessionToken = getSessionToken();
 			if (sessionToken) {
-				// options.headers.append('X-Session-Token', sessionToken);
+				options.headers.append('X-Session-Token', sessionToken);
 			}
 		}
 	}
@@ -176,6 +175,8 @@ async function request(method: string, path: string, data?: object, headers?: He
 
 	const resp = await fetch(settings.baseUrl + path, <RequestInit>options);
 	const msg = await resp.json();
+
+	// Handle changes in authentication state
 	if (msg.status === 410) {
 		tokenStorage.removeItem('sessionToken');
 	}
@@ -183,6 +184,7 @@ async function request(method: string, path: string, data?: object, headers?: He
 		tokenStorage.setItem('sessionToken', msg.meta.session_token);
 	}
 	if ([401, 410].includes(msg.status) || (msg.status === 200 && msg.meta?.is_authenticated)) {
+		// Notify the state handler that the authentication state has changed, and include the new data.
 		const event = new CustomEvent('allauth.auth.change', { detail: msg });
 		document.dispatchEvent(event);
 	}
@@ -198,7 +200,9 @@ export async function reauthenticate(data: object) {
 }
 
 export async function logout() {
-	return await request('DELETE', URLs.SESSION);
+	const resp = await request('DELETE', URLs.SESSION);
+	tokenStorage.removeItem('sessionToken');
+	return resp;
 }
 
 export async function signUp(data: { username: string; email: string; password: string }) {

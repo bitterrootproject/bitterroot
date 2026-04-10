@@ -67,16 +67,16 @@
 	<!-- LT/TU 838.1.E2 A469 -->
 
 	<!-- Subject -->
-	{#await cnClient.getSubjects()}
-		<SelectionBox label="Subject" />
+	{#await cnClient.getDomains()}
+		<SelectionBox label="Domain" />
 	{:then available}
 		<SelectionBox
-			label="Subject"
+			label="Domain"
 			items={available}
 			select={(e: CallNumberFieldItem) => {
 				// Clear all dependent fields
-				selected.subject = e;
-				selected.domain = undefined;
+				selected.domain = e;
+				selected.subdomain = undefined;
 				selected.root = undefined;
 				selected.aspect = undefined;
 				selected.topic = undefined;
@@ -85,16 +85,16 @@
 	{/await}
 
 	<!-- Domain -->
-	{#if selected.subject}
-		{#await cnClient.getDomains(selected.subject.number)}
-			<SelectionBox label="Domain" />
+	{#if selected.domain}
+		{#await cnClient.getSubdomains(selected.domain.number)}
+			<SelectionBox label="Subdomain" />
 		{:then available}
 			<SelectionBox
-				label="Domain"
+				label="Subdomain"
 				items={available}
 				select={(e: CallNumberFieldItem) => {
 					// Clear all dependent fields
-					selected.domain = e;
+					selected.subdomain = e;
 					selected.root = undefined;
 					selected.aspect = undefined;
 					selected.topic = undefined;
@@ -103,15 +103,15 @@
 		{/await}
 	{:else}
 		<SelectionBox
-			label="Domain"
+			label="Subdomain"
 			noItemsPlaceholder="Select a subject to see available domains."
 			disabled={true}
 		/>
 	{/if}
 
 	<!-- Root -->
-	{#if selected.domain}
-		{#await cnClient.getRoots(selected.domain.number)}
+	{#if selected.subdomain}
+		{#await cnClient.getRoots(selected.subdomain.number)}
 			<SelectionBox label="Root" />
 		{:then available}
 			<SelectionBox

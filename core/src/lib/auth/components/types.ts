@@ -47,6 +47,9 @@ export interface FormField {
 
 	/** Field validator. */
 	validator?: FormFieldValidator;
+
+	/** Should this field be validated in the first place? */
+	validateField?: boolean;
 }
 
 export interface FormFieldValidator {

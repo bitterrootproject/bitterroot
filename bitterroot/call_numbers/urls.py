@@ -11,8 +11,8 @@ from bitterroot.call_numbers.views import (
     DomainListView,
     RootDetailView,
     RootListView,
-    SubjectDetailView,
-    SubjectListView,
+    SubdomainDetailView,
+    SubdomainListView,
     TopicDetailView,
     TopicListView,
 )
@@ -20,10 +20,10 @@ from bitterroot.call_numbers.views import (
 app_name = "cn"
 
 urlpatterns = [
-    path("subjects/", SubjectListView.as_view()),
-    path("subjects/<int:pk>", SubjectDetailView.as_view()),
     path("domains/", DomainListView.as_view()),
     path("domains/<int:pk>", DomainDetailView.as_view()),
+    path("subdomains/", SubdomainListView.as_view()),
+    path("subdomains/<int:pk>", SubdomainDetailView.as_view()),
     path("roots/", RootListView.as_view()),
     path("roots/<int:pk>", RootDetailView.as_view()),
     path("aspects/", AspectListView.as_view()),

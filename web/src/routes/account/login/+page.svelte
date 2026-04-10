@@ -19,7 +19,8 @@
 			label: 'Email',
 			type: 'email',
 			required: true,
-			primaryFocus: true
+			primaryFocus: true,
+			validateField: false
 		},
 		{
 			name: 'password',

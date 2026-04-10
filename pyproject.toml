@@ -41,8 +41,8 @@ dev = [
 
 # Ruff settings
 
-[tool.ruff]
-include = ["src/bitterroot/**/*.py"]
+# [tool.ruff]
+# include = ["bitterroot/**/*.py"]
 
 [tool.ruff.format]
 docstring-code-format = true

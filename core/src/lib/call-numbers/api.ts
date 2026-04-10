@@ -13,8 +13,8 @@ export interface CallNumberFieldItem {
  */
 export interface CallNumber extends Record<string, CallNumberFieldItem | number | string> {
 	id: number;
-	subject: CallNumberFieldItem;
 	domain: CallNumberFieldItem;
+	subdomain: CallNumberFieldItem;
 	root: CallNumberFieldItem;
 	aspect: CallNumberFieldItem;
 	topic: CallNumberFieldItem;
@@ -27,8 +27,8 @@ export interface CallNumber extends Record<string, CallNumberFieldItem | number 
  * with server-returned call numbers should instead use the `CallNumber` type.
  */
 export interface SelectedItems {
-	subject?: CallNumberFieldItem;
 	domain?: CallNumberFieldItem;
+	subdomain?: CallNumberFieldItem;
 	root?: CallNumberFieldItem;
 	aspect?: CallNumberFieldItem;
 	topic?: CallNumberFieldItem;
@@ -39,11 +39,11 @@ export interface SelectedItems {
 export function formatSelectedFields(selectedFields: SelectedItems): string {
 	// LT/TU 838.1.E2 A469
 	let formatted = '';
-	if (selectedFields.subject) {
-		formatted += selectedFields.subject.number;
+	if (selectedFields.domain) {
+		formatted += selectedFields.domain.number;
 
-		if (selectedFields.domain) {
-			formatted += '/' + selectedFields.domain.number;
+		if (selectedFields.subdomain) {
+			formatted += '/' + selectedFields.subdomain.number;
 
 			if (selectedFields.root) {
 				formatted += ' ' + selectedFields.root.number;
@@ -78,8 +78,8 @@ export interface CallNumberApiClient {
 		constraint?: { key: string; value: string }
 	): Promise<CallNumberFieldItem[]>;
 
-	getSubjects(): Promise<CallNumberFieldItem[]>;
-	getDomains(subject: string): Promise<CallNumberFieldItem[]>;
+	getDomains(): Promise<CallNumberFieldItem[]>;
+	getSubdomains(subject: string): Promise<CallNumberFieldItem[]>;
 	getRoots(domain: string): Promise<CallNumberFieldItem[]>;
 	getAspects(root: string): Promise<CallNumberFieldItem[]>;
 	getTopics(aspect: string): Promise<CallNumberFieldItem[]>;

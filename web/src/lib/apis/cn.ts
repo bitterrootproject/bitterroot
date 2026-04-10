@@ -46,12 +46,12 @@ export class CnClient implements CallNumberApiClient {
 			.then((response) => response as CallNumberFieldItem[]);
 	}
 
-	async getSubjects() {
-		return this.getField('subjects');
+	async getDomains() {
+		return this.getField('domains');
 	}
 
-	async getDomains(subject: string) {
-		return this.getField('domains', { key: 'subject', value: subject });
+	async getSubdomains(subject: string) {
+		return this.getField('subdomains', { key: 'domain', value: subject });
 	}
 
 	async getRoots(domain: string) {
@@ -78,11 +78,11 @@ export class CnClient implements CallNumberApiClient {
 		const formattedConstraints: string[] = [];
 
 		if (fields != undefined) {
-			if (fields.subject) {
-				formattedConstraints.push(`subject=${fields.subject.number}`);
-			}
 			if (fields.domain) {
 				formattedConstraints.push(`domain=${fields.domain.number}`);
+			}
+			if (fields.subdomain) {
+				formattedConstraints.push(`subdomain=${fields.subdomain.number}`);
 			}
 			if (fields.root) {
 				formattedConstraints.push(`root=${fields.root.number}`);

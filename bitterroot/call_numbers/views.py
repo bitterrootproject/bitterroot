@@ -6,7 +6,7 @@ from bitterroot.call_numbers.models import (
     CallNumber,
     Domain,
     Root,
-    Subject,
+    Subdomain,
     Topic,
 )
 from bitterroot.call_numbers.serializers import (
@@ -15,7 +15,7 @@ from bitterroot.call_numbers.serializers import (
     CallNumberSerializer,
     DomainSerializer,
     RootSerializer,
-    SubjectSerializer,
+    SubdomainSerializer,
     TopicSerializer,
 )
 from bitterroot.utils.filters import QueryFilter
@@ -23,32 +23,32 @@ from bitterroot.utils.filters import QueryFilter
 # Create your views here.
 
 
-# Subject
-class SubjectListView(ListAPIView):
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
-    # permission_classes = [permissions.IsAuthenticated]
-
-
-class SubjectDetailView(RetrieveAPIView):
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
-
-
 # Domain
 class DomainListView(ListAPIView):
     queryset = Domain.objects.all()
     serializer_class = DomainSerializer
-
-    filter_backends = [QueryFilter]
-    filterset_db_field_suffix = "__number"
-    filterset_fields = ["subject"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
 class DomainDetailView(RetrieveAPIView):
     queryset = Domain.objects.all()
     serializer_class = DomainSerializer
+
+
+# Subdomain
+class SubdomainListView(ListAPIView):
+    queryset = Subdomain.objects.all()
+    serializer_class = SubdomainSerializer
+
+    filter_backends = [QueryFilter]
+    filterset_db_field_suffix = "__number"
+    filterset_fields = ["domain"]
+    # permission_classes = [permissions.IsAuthenticated]
+
+
+class SubdomainDetailView(RetrieveAPIView):
+    queryset = Subdomain.objects.all()
+    serializer_class = SubdomainSerializer
 
 
 # Root
@@ -58,7 +58,7 @@ class RootListView(ListAPIView):
 
     filter_backends = [QueryFilter]
     filterset_db_field_suffix = "__number"
-    filterset_fields = ["domain"]
+    filterset_fields = ["domain", "subdomain"]
     # permission_classes = [permissions.IsAuthenticated]
 
 
@@ -124,8 +124,8 @@ class CallNumberListView(ListAPIView):
     filter_backends = [QueryFilter]
     filterset_db_field_suffix = "__number"
     filterset_fields = [
-        "subject",
         "domain",
+        "subdomain",
         "root",
         "aspect",
         "topic",

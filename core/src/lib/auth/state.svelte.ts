@@ -1,11 +1,11 @@
 // import { getAuth, getConfig } from '$lib/auth/allauth';
 
-// import type { AuthData, ConfigData } from '$lib/auth/types';
+// import type { SessionData, ConfigData } from '$lib/auth/types';
 
-import { getAuth, getConfig, type AuthData, type ConfigData } from '.';
+import { getAuth, getConfig, type SessionData, type ConfigData } from '.';
 
 export interface AuthState {
-	auth?: AuthData | null;
+	auth?: SessionData | null;
 	config?: ConfigData | null;
 	isLoading: boolean;
 	hasError: boolean;
@@ -26,11 +26,18 @@ export function useAuth() {
 		get config() {
 			return authState.config;
 		},
-		get isLoading() {
+		get isLoading(): boolean {
 			return authState.isLoading;
 		},
-		get hasError() {
+		get hasError(): boolean {
 			return authState.hasError;
+		},
+		get isAuthenticated() {
+			if (!authState.auth) {
+				return false;
+			} else {
+				return authState.auth.meta.is_authenticated;
+			}
 		}
 	};
 }
@@ -39,13 +46,13 @@ export function useAuth() {
 export function initAuth() {
 	// Fetch initial auth state
 	getAuth()
-		.then((data: AuthData) => {
+		.then((data: SessionData) => {
 			authState.auth = data;
 			console.log('Authentication status loaded');
 		})
 		.catch((e) => {
 			console.error(e);
-			authState.auth = null;
+			authState.auth = undefined;
 			authState.hasError = true;
 		});
 
@@ -63,6 +70,8 @@ export function initAuth() {
 	function onAuthChanged(e: CustomEvent) {
 		console.log('Authentication status updated');
 		authState.auth = e.detail;
+		// if (authState.isAuthenticated)
+		// authState.isAuthenticated = e.detail.data.meta.is_authenticated
 	}
 
 	document.addEventListener('allauth.auth.change', onAuthChanged as EventListener);

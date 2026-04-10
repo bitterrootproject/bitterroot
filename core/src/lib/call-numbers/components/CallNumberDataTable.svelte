@@ -21,8 +21,8 @@
 	<table>
 		<thead>
 			<tr>
-				<ThSort {table} field="subject">Subject</ThSort>
 				<ThSort {table} field="domain">Domain</ThSort>
+				<ThSort {table} field="subdomain">Subdomain</ThSort>
 				<ThSort {table} field="root">Root</ThSort>
 				<ThSort {table} field="aspect">Aspect</ThSort>
 				<ThSort {table} field="topic">Topic</ThSort>
@@ -32,8 +32,8 @@
 				{/if}
 			</tr>
 			<tr>
-				<ThFilter {table} field="subject" />
 				<ThFilter {table} field="domain" />
+				<ThFilter {table} field="subdomain" />
 				<ThFilter {table} field="root" />
 				<ThFilter {table} field="aspect" />
 				<ThFilter {table} field="topic" />
@@ -47,12 +47,12 @@
 			{#each table.rows as row (row.id)}
 				<tr class="cn-component-row">
 					<td>
-						<span>{row.subject.name}</span>
-						<span>{row.subject.number}</span>
-					</td>
-					<td>
 						<span>{row.domain.name}</span>
 						<span>{row.domain.number}</span>
+					</td>
+					<td>
+						<span>{row.subdomain.name}</span>
+						<span>{row.subdomain.number}</span>
 					</td>
 					<td>
 						<span>{row.root.name}</span>

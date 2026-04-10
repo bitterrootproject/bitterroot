@@ -18,16 +18,19 @@ from environs import env
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Import environment variables
-env.read_env(BASE_DIR.parent.parent / ".env")
+env.read_env(BASE_DIR.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str(
-    "SECRET_KEY",
-    default="django-insecure-vi9)@6*fdd5sjxo0lrz8#zu@-c5d18+(xr3+-&x86&ox)f(vb7",
-)
+# SECRET_KEY = env.str(
+#     "SECRET_KEY",
+#     default="django-insecure-vi9)@6*fdd5sjxo0lrz8#zu@-c5d18+(xr3+-&x86&ox)f(vb7",
+# )
+SECRET_KEY = "ua1Ohwahveirei1chi4EiBahghiphigh5ooneipheengoh4tahGheis2eiMai4Oo"
+
+print(f"Using secret key: {SECRET_KEY}")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", False)
@@ -35,6 +38,13 @@ BUILD = env.bool("BUILD", False)
 
 # ALLOWED_HOSTS = ["127.0.0.1", "localhost", "localhost:8000"]
 ALLOWED_HOSTS = ["*"]
+
+print(f"""\
+Using environment:
+- SECRET_KEY: '{SECRET_KEY}'
+- DEBUG: {DEBUG}
+- BUILD: {BUILD}
+""")
 
 
 # Application definition
@@ -73,6 +83,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "modern_csrf.middleware.ModernCsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -88,15 +99,13 @@ ROOT_URLCONF = "bitterroot.root.urls"
 
 # Directory where SvelteKit is built to
 # Sometimes the directory is different, like during a CI build pipeline or Docker build.
-FRONTEND_BUILD_DIR = env.path(
-    "FRONTEND_BUILD_DIR", BASE_DIR.parent / "frontend" / "build"
-)
+FRONTEND_BUILD_DIR = env.path("FRONTEND_BUILD_DIR", BASE_DIR.parent / "web" / "build")
 
 # Where to serve files from
 STATIC_URL = "/static/"
 
 # Where collected static files are stored
-STATIC_ROOT = BASE_DIR.parent.parent / "build" / "staticfiles"
+STATIC_ROOT = BASE_DIR.parent / "build" / "staticfiles"
 
 # Where to collect static files from
 STATICFILES_DIRS = [FRONTEND_BUILD_DIR]
@@ -193,12 +202,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:8000"]
+CORS_ALLOW_CREDENTIALS = True
 from corsheaders.defaults import default_headers
 
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "access-control-allow-origin",
+    "x-session-token",
 )
 # CSRF_COOKIE_HTTPONLY = False
 # CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
@@ -215,16 +227,15 @@ CORS_ORIGINS_WHITELIST = ["http://localhost:5173"]
 # }
 
 
-
 # Allauth Settings
 
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
 
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
+# ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
 HEADLESS_ONLY = True

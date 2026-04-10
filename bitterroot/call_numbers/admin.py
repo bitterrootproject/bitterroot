@@ -6,26 +6,26 @@ from bitterroot.call_numbers.models import (
     CallNumber,
     Domain,
     Root,
-    Subject,
+    Subdomain,
     Topic,
 )
 
 
 # Register your models here.
-@admin.register(Subject)
-class SubjectAdmin(admin.ModelAdmin):
+@admin.register(Domain)
+class DomainAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
     ]
 
 
-@admin.register(Domain)
-class DomainAdmin(admin.ModelAdmin):
+@admin.register(Subdomain)
+class SubdomainAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
-        "subject",
+        "domain",
     ]
 
 
@@ -35,6 +35,7 @@ class RootAdmin(admin.ModelAdmin):
         "name",
         "number",
         "domain",
+        "subdomain",
     ]
 
 
@@ -43,7 +44,7 @@ class AspectAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "number",
-        # "root",
+        "root",
     ]
 
 
@@ -67,8 +68,8 @@ class AuthorPublisherAdmin(admin.ModelAdmin):
 @admin.register(CallNumber)
 class CallNumberAdmin(admin.ModelAdmin):
     list_display = [
-        "subject",
         "domain",
+        "subdomain",
         "root",
         "aspect",
         "topic",

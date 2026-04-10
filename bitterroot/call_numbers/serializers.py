@@ -6,19 +6,9 @@ from bitterroot.call_numbers.models import (
     CallNumber,
     Domain,
     Root,
-    Subject,
+    Subdomain,
     Topic,
 )
-
-
-class SubjectSerializer(ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = [
-            "id",
-            "name",
-            "number",
-        ]
 
 
 class DomainSerializer(ModelSerializer):
@@ -28,7 +18,17 @@ class DomainSerializer(ModelSerializer):
             "id",
             "name",
             "number",
-            # "subject",
+        ]
+
+
+class SubdomainSerializer(ModelSerializer):
+    class Meta:
+        model = Subdomain
+        fields = [
+            "id",
+            "name",
+            "number",
+            "domain",
         ]
 
 
@@ -40,6 +40,7 @@ class RootSerializer(ModelSerializer):
             "name",
             "number",
             "domain",
+            "subdomain",
         ]
 
 
@@ -76,15 +77,15 @@ class AuthorPublisherSerializer(ModelSerializer):
 
 
 # Nested serializers for CallNumber - only id, number, name
-class SubjectNestedSerializer(ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = ["id", "number", "name"]
-
-
 class DomainNestedSerializer(ModelSerializer):
     class Meta:
         model = Domain
+        fields = ["id", "number", "name"]
+
+
+class SubdomainNestedSerializer(ModelSerializer):
+    class Meta:
+        model = Subdomain
         fields = ["id", "number", "name"]
 
 
@@ -113,8 +114,8 @@ class AuthorPublisherNestedSerializer(ModelSerializer):
 
 
 class CallNumberSerializer(ModelSerializer):
-    subject: Serializer = SubjectNestedSerializer(read_only=True)  # type: ignore[assignment]
     domain: Serializer = DomainNestedSerializer(read_only=True)  # type: ignore[assignment]
+    subdomain: Serializer = SubdomainNestedSerializer(read_only=True)  # type: ignore[assignment]
     root: Serializer = RootNestedSerializer(read_only=True)  # type: ignore[assignment]
     aspect: Serializer = AspectNestedSerializer(read_only=True)  # type: ignore[assignment]
     topic: Serializer = TopicNestedSerializer(read_only=True)  # type: ignore[assignment]
@@ -124,8 +125,8 @@ class CallNumberSerializer(ModelSerializer):
         model = CallNumber
         fields = [
             "id",
-            "subject",
             "domain",
+            "subdomain",
             "root",
             "aspect",
             "topic",
